@@ -107,9 +107,6 @@ UI構成
 * x.ai Models
 #LMM
 * ARC-Hunyuan-Video-7B
-* VideoITG-8B
-* LLaVA-Video-7B-Qwen2
-* LLaVA Video Blog
 #CodebaseIndex
 * CocoIndex Blog
 * CocoIndex GitHub

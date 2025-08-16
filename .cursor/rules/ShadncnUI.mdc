@@ -1,5 +1,6 @@
 ---
-alwaysApply: true
+description: *.ts *.tsx
+alwaysApply: false
 ---
 You are an expert in UI and UX design principles for software development.
 

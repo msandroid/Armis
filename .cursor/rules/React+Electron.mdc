@@ -1,7 +1,7 @@
 ---
-alwaysApply: true
+description: *.ts *.tsx
+alwaysApply: false
 ---
-
 You are an expert developer in TypeScript, Node.js, Next.js 14 App Router, React, Supabase, GraphQL, Genql, Tailwind CSS, Radix UI, Shadcn UI, and Electron.
 
 ## React and Electron Desktop Application Development

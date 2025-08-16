@@ -20,8 +20,9 @@ https://ai-sdk.dev/docs/getting-started/nextjs-app-router
 * WaveSurfer.js – 音声波形表示・編集
 * Fabric.js – インタラクティブなCanvas編集
 * React Window / React Virtualized – 大量データ仮想化表示
+https://github.com/Blazity/shadcn-chatbot-kit
 https://github.com/sambowenhughes/a-react-video-editor?utm_source=chatgpt.com
-timeline-editor - https://v0.dev/t/kpS6tJwcg3c
+https://v0.dev/t/kpS6tJwcg3c
 https://examples.motion.dev/react
 https://motion.dev/docs/react-animation
 https://ai-sdk.dev/getting-started
@@ -35,12 +36,15 @@ https://ai-sdk.dev/getting-started
 * Awesome AI Agents by jim-schwoebel
 * Microsoft Autogen
 * yt-dlp – 動画ダウンロード
-https://github.com/Blazity/shadcn-chatbot-kit
-https://github.com/sambowenhughes/a-react-video-editor?utm_source=chatgpt.com
-https://v0.dev/t/kpS6tJwcg3c
-https://examples.motion.dev/react
-https://motion.dev/docs/react-animation
-https://ai-sdk.dev/getting-started
+https://github.com/evalstate/fast-agent?utm_source=chatgpt.com
+https://github.com/civai-technologies/cursor-agent?utm_source=chatgpt.com
+https://github.com/langchain-ai/langchain
+https://github.com/kaushikb11/awesome-llm-agents?utm_source=chatgpt.com
+https://github.com/microsoft/playwright-mcp
+https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking
+https://github.com/jim-schwoebel/awesome_ai_agents?tab=readme-ov-file
+https://github.com/microsoft/autogen?tab=readme-ov-file
+https://github.com/yt-dlp/yt-dlp
 #LLM
 * Ollama
 * Fireworks AI Login
