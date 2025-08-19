@@ -1,0 +1,34 @@
+/* VS Code Style Scrollbar */
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 3px solid var(--background);
+  border-radius: 7px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--background);
+}
+
+/* VS Code Style Focus */
+*:focus {
+  outline: 1px solid var(--primary);
+  outline-offset: 1px;
+}
+
+/* VS Code Style Selection */
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}

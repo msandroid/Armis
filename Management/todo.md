@@ -1,14 +1,31 @@
+## 1. MVP E2E Checklist
+
+### MVP E2E: Structural Style Transfer（最優先）
+
+目的：参照動画の構造抽出→新規コンテンツへの転写→プレビュー→書き出しまでを最小構成で成立
+
+- [ ] 取込：URL/ローカルから参照動画・記事投入（yt-dlp / スクレイピング）
+- [ ] 解析：Whisper（ASR）/ PySceneDetect（カット）/ pyannote（話者・BGM）
+- [ ] 構造抽出：LMMで章/ショット長/B-roll頻度/ナレ比率を数値化
+- [ ] 台本生成：記事要約＋構造パラメータ適用（MulmoScript）
+- [ ] アセット：B-roll/SFX収集、TTS生成、Assetsタブで差し替え
+- [ ] 合成：Timeline編集、差分プレビュー、FFmpeg書き出し
+- [ ] KPI計測：初回プレビュー時間・構造一致度・成功率のロギング
+- [ ] 受け入れ基準テスト：±10%内再現、テンプレ再適用、E2Eログ
+
+---
+
 ## 1. UI・フロントエンドの整備
 
 VSCodiumをベースにしてArmis固有のUIを組み込むフェーズです。
 
 * **チャットパネル**
+  * sidebarを改変してchatpanel実装してください。
   * AISDKを利用してください。https://ai-sdk.dev/docs/getting-started/nextjs-app-router
   * shadcn-chatbot-kitを組み込んで、ユーザー入力、履歴表示、添付ファイル対応
   * PromptInputBox, FileDropZoneの配置
 
 * **編集/ビルドパネル**
-
   * a-react-video-editorによるタイムライン編集、カット/トランジション対応
   * Canvas/Script/Workflow/Timeline/Assets/AudioタブのUI整備
   * WaveSurfer.jsで音声波形表示（未導入）

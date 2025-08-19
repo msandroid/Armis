@@ -171,6 +171,30 @@ You are an expert in UI and UX design principles for software development.
   - URL: https://ui.shadcn.com/docs/components/sonner
   - Best for: Modern notification system, action feedback
 
+#### Animation & Loading Components
+- **Circle Spinner**: Use for media generation loading states
+  - Best for: Image generation, video processing, file uploads
+  - Implementation: Use CSS animations with Tailwind CSS classes
+  - Example: `<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>`
+- **Jumping Dots**: Use for text generation loading states
+  - Best for: AI text generation, chat responses, content loading
+  - Implementation: Use CSS animations with Tailwind CSS classes
+  - Example: `<div className="flex space-x-1"><div className="animate-bounce">.</div><div className="animate-bounce delay-100">.</div><div className="animate-bounce delay-200">.</div></div>`
+- **Progress**: Use for determinate loading states
+  - URL: https://ui.shadcn.com/docs/components/progress
+  - Best for: File uploads, data processing, step-by-step operations
+- **Skeleton**: Use for content loading placeholders
+  - URL: https://ui.shadcn.com/docs/components/skeleton
+  - Best for: Content loading, data fetching, initial page loads
+
+### Animation Guidelines
+- **Media Generation**: Always use Circle Spinner for media-related loading states
+- **Text Generation**: Always use Jumping Dots for text-related loading states
+- **Performance**: Use CSS animations over JavaScript animations for better performance
+- **Accessibility**: Ensure loading states are accessible to screen readers
+- **Consistency**: Maintain consistent animation timing and easing across the application
+- **User Feedback**: Provide clear visual feedback for all loading states
+
 #### Utility Components
 - **Aspect Ratio**: Use for maintaining image proportions
   - URL: https://ui.shadcn.com/docs/components/aspect-ratio

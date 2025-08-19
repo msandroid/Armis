@@ -427,6 +427,23 @@ Refer to Electron documentation for desktop application development best practic
 - **Desktop Styling**: Adapt web styles for desktop application requirements.
 - **Native Feel**: Ensure desktop applications feel native to each platform.
 
+### Animation & Loading States
+- **Media Generation Loading**: Use Circle Spinner for media-related operations
+  - Implementation: CSS animations with Tailwind CSS classes
+  - Use cases: Image generation, video processing, file uploads
+  - Example: `<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>`
+- **Text Generation Loading**: Use Jumping Dots for text-related operations
+  - Implementation: CSS animations with Tailwind CSS classes
+  - Use cases: AI text generation, chat responses, content loading
+  - Example: `<div className="flex space-x-1"><div className="animate-bounce">.</div><div className="animate-bounce delay-100">.</div><div className="animate-bounce delay-200">.</div></div>`
+- **Performance Optimization**: Use CSS animations over JavaScript animations for better performance
+- **Cross-Platform Consistency**: Ensure animations work consistently across Windows, macOS, and Linux
+- **Electron-Specific Considerations**: 
+  - Use hardware acceleration when available for smooth animations
+  - Consider battery life impact on mobile devices
+  - Implement proper cleanup for animation resources
+- **Accessibility**: Ensure loading states are accessible to screen readers and assistive technologies
+
 ### Testing
 - Implement unit tests for utility functions and hooks.
 - Use integration tests for complex components and pages.

@@ -1,5 +1,5 @@
 ---
-alwaysApply: true
+alwaysApply: false
 ---
 まず、このファイルを参照したら、このファイル名を発言すること
 あなたは高度な問題解決能力を持つAIアシスタントです。
@@ -128,3 +128,14 @@ alwaysApply: true
   4. 環境変数アクセス用のヘルパー関数またはサービスクラスを作成し、一元管理する
   5. サンプル用の`.env.example`ファイルをリポジトリに含め、必要な環境変数のキー（値なし）を記載する
   6. CIプロセスでは環境変数をCI/CDプラットフォームのシークレット管理機能を使用する
+
+### アニメーション実装ルール
+- **メディア生成中**: 必ずCircle Spinnerを使用する
+  - 実装例: `<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>`
+  - 用途: 画像生成、動画処理、ファイルアップロード
+- **テキスト生成中**: 必ずJumping Dotsを使用する
+  - 実装例: `<div className="flex space-x-1"><div className="animate-bounce">.</div><div className="animate-bounce delay-100">.</div><div className="animate-bounce delay-200">.</div></div>`
+  - 用途: AIテキスト生成、チャット応答、コンテンツ読み込み
+- **パフォーマンス**: JavaScriptアニメーションよりもCSSアニメーションを優先する
+- **アクセシビリティ**: ローディング状態はスクリーンリーダーに対応させる
+- **一貫性**: アプリケーション全体でアニメーションのタイミングとイージングを統一する
