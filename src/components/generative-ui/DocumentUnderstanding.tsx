@@ -4,17 +4,18 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Loader2, Upload, Video, Eye } from 'lucide-react'
-import { GoogleDirectService, AudioVideoResponse } from '@/services/llm/google-direct-service'
+import { Loader2, Upload, FileText, Eye } from 'lucide-react'
+import { GoogleDirectService, DocumentResponse } from '@/services/llm/google-direct-service'
 
-interface VideoUnderstandingProps {
+interface DocumentUnderstandingProps {
   googleService: GoogleDirectService
 }
 
-export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
-  const [videoData, setVideoData] = useState<string | null>(null)
-  const [textPrompt, setTextPrompt] = useState('このビデオの内容を詳しく説明してください。')
-  const [analysis, setAnalysis] = useState<AudioVideoResponse | null>(null)
+export function DocumentUnderstanding({ googleService }: DocumentUnderstandingProps) {
+  const [documentData, setDocumentData] = useState<string | null>(null)
+  const [documentType, setDocumentType] = useState<string>('')
+  const [textPrompt, setTextPrompt] = useState('このドキュメントの内容を詳しく説明してください。')
+  const [analysis, setAnalysis] = useState<DocumentResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -26,7 +27,8 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
         const result = e.target?.result as string
         // Base64データからヘッダー部分を除去
         const base64Data = result.split(',')[1]
-        setVideoData(base64Data)
+        setDocumentData(base64Data)
+        setDocumentType(file.type)
         setError(null)
       }
       reader.readAsDataURL(file)
@@ -36,14 +38,18 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'video/*': ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm']
+      'application/pdf': ['.pdf'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'application/msword': ['.doc'],
+      'text/plain': ['.txt'],
+      'text/csv': ['.csv']
     },
     multiple: false
   })
 
-  const analyzeVideo = async () => {
-    if (!videoData) {
-      setError('ビデオをアップロードしてください')
+  const analyzeDocument = async () => {
+    if (!documentData || !documentType) {
+      setError('ドキュメントをアップロードしてください')
       return
     }
 
@@ -51,18 +57,18 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
     setError(null)
 
     try {
-      const result = await googleService.analyzeVideo(videoData, textPrompt)
+      const result = await googleService.analyzeDocument(documentData, documentType, textPrompt)
       setAnalysis(result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'ビデオ分析中にエラーが発生しました')
+      setError(err instanceof Error ? err.message : 'ドキュメント分析中にエラーが発生しました')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const analyzeVideoOnly = async () => {
-    if (!videoData) {
-      setError('ビデオをアップロードしてください')
+  const analyzeDocumentOnly = async () => {
+    if (!documentData || !documentType) {
+      setError('ドキュメントをアップロードしてください')
       return
     }
 
@@ -70,10 +76,10 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
     setError(null)
 
     try {
-      const result = await googleService.analyzeVideo(videoData)
+      const result = await googleService.analyzeDocument(documentData, documentType)
       setAnalysis(result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'ビデオ分析中にエラーが発生しました')
+      setError(err instanceof Error ? err.message : 'ドキュメント分析中にエラーが発生しました')
     } finally {
       setIsLoading(false)
     }
@@ -84,15 +90,15 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Video className="h-5 w-5" />
-            ビデオ理解・分析
+            <FileText className="h-5 w-5" />
+            ドキュメント理解・分析
           </CardTitle>
           <CardDescription>
-            ビデオをアップロードして、AIによるビデオ理解と分析を体験できます
+            ドキュメントをアップロードして、AIによるドキュメント理解と分析を体験できます
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* ビデオアップロードエリア */}
+          {/* ドキュメントアップロードエリア */}
           <div
             {...getRootProps()}
             className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
@@ -104,29 +110,33 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
             <input {...getInputProps()} />
             <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
             {isDragActive ? (
-              <p className="text-blue-600">ビデオをここにドロップしてください</p>
+              <p className="text-blue-600">ドキュメントをここにドロップしてください</p>
             ) : (
               <div>
                 <p className="text-gray-600 mb-2">
-                  クリックしてビデオを選択、またはドラッグ&ドロップ
+                  クリックしてドキュメントを選択、またはドラッグ&ドロップ
                 </p>
                 <p className="text-sm text-gray-500">
-                  MP4, AVI, MOV, WMV, FLV, WebM形式をサポート
+                  PDF, DOCX, DOC, TXT, CSV形式をサポート
                 </p>
               </div>
             )}
           </div>
 
-          {/* アップロードされたビデオのプレビュー */}
-          {videoData && (
+          {/* アップロードされたドキュメントの情報 */}
+          {documentData && documentType && (
             <div className="space-y-2">
-              <Label>アップロードされたビデオ:</Label>
-              <div className="relative">
-                <video
-                  src={`data:video/mp4;base64,${videoData}`}
-                  controls
-                  className="max-w-full h-auto max-h-64 rounded-lg border"
-                />
+              <Label>アップロードされたドキュメント:</Label>
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-700">
+                    ファイルタイプ: {documentType}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  ドキュメントが正常にアップロードされました
+                </p>
               </div>
             </div>
           )}
@@ -138,7 +148,7 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
               id="text-prompt"
               value={textPrompt}
               onChange={(e) => setTextPrompt(e.target.value)}
-              placeholder="ビデオに対して何を分析してほしいか入力してください..."
+              placeholder="ドキュメントに対して何を分析してほしいか入力してください..."
               rows={3}
             />
           </div>
@@ -146,8 +156,8 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
           {/* アクションボタン */}
           <div className="flex gap-2">
             <Button
-              onClick={analyzeVideo}
-              disabled={!videoData || isLoading}
+              onClick={analyzeDocument}
+              disabled={!documentData || isLoading}
               className="flex items-center gap-2"
             >
               {isLoading ? (
@@ -155,20 +165,20 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
               ) : (
                 <Eye className="h-4 w-4" />
               )}
-              ビデオを分析（カスタムプロンプト）
+              ドキュメントを分析（カスタムプロンプト）
             </Button>
             <Button
-              onClick={analyzeVideoOnly}
-              disabled={!videoData || isLoading}
+              onClick={analyzeDocumentOnly}
+              disabled={!documentData || isLoading}
               variant="outline"
               className="flex items-center gap-2"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Video className="h-4 w-4" />
+                <FileText className="h-4 w-4" />
               )}
-              ビデオを自動分析
+              ドキュメントを自動分析
             </Button>
           </div>
 
@@ -188,12 +198,13 @@ export function VideoUnderstanding({ googleService }: VideoUnderstandingProps) {
             <CardTitle>分析結果</CardTitle>
             <CardDescription>
               処理時間: {analysis.duration}ms | トークン数: {analysis.tokens}
+              {analysis.documentType && ` | ファイルタイプ: ${analysis.documentType}`}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
-                <Label className="text-sm font-medium text-gray-700">ビデオ分析:</Label>
+                <Label className="text-sm font-medium text-gray-700">ドキュメント分析:</Label>
                 <div className="mt-2 p-4 bg-gray-50 rounded-lg">
                   <p className="text-gray-800 whitespace-pre-wrap">{analysis.analysis}</p>
                 </div>

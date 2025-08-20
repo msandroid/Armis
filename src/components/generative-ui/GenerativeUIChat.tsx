@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { Send, Settings, Bot, User, Image, Video, Eye, Upload, X } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Send, Settings, Bot, User, Image, Video, Eye, Upload, X, Brain } from 'lucide-react'
 import { useDropzone } from 'react-dropzone'
 import { generativeUIService } from '@/services/generative-ui/generative-ui-service'
 import { Weather } from './Weather'
@@ -10,6 +10,7 @@ import { Calculator } from './Calculator'
 import { SearchResults } from './SearchResults'
 import { ImageAnalyzer } from './ImageAnalyzer'
 import { MediaGenerator } from './MediaGenerator'
+import { GeminiUnderstandingInterface } from './GeminiUnderstandingInterface'
 import { AIProviderConfig } from '@/types/ai-sdk'
 import { GoogleDirectService } from '@/services/llm/google-direct-service'
 
@@ -43,7 +44,7 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   const [currentResponse, setCurrentResponse] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'chat' | 'image-analysis' | 'media-generation'>('chat')
+  const [activeTab, setActiveTab] = useState<'chat' | 'image-analysis' | 'media-generation' | 'understanding'>('chat')
   const [chatImageData, setChatImageData] = useState<string | null>(null)
   const [chatVideoData, setChatVideoData] = useState<string | null>(null)
   const [chatAudioData, setChatAudioData] = useState<string | null>(null)
@@ -428,6 +429,17 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
           画像分析
         </button>
         <button
+          onClick={() => setActiveTab('understanding')}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
+            activeTab === 'understanding'
+              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          }`}
+        >
+          <Brain className="w-4 h-4" />
+          Understanding
+        </button>
+        <button
           onClick={() => setActiveTab('media-generation')}
           className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === 'media-generation'
@@ -482,6 +494,10 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
 
         {activeTab === 'image-analysis' && googleService && (
           <ImageAnalyzer googleService={googleService} />
+        )}
+
+        {activeTab === 'understanding' && googleService && (
+          <GeminiUnderstandingInterface googleService={googleService} />
         )}
 
         {activeTab === 'media-generation' && googleService && (
