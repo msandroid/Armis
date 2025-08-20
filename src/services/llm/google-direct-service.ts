@@ -27,6 +27,15 @@ export interface AudioVideoResponse {
   duration: number
 }
 
+export interface DocumentResponse {
+  text: string
+  analysis: string
+  tokens: number
+  duration: number
+  documentType?: string
+  pageCount?: number
+}
+
 export class GoogleDirectService {
   private ai: GoogleGenAI | null = null
   private currentModel: string = 'gemini-2.5-flash'
@@ -275,6 +284,44 @@ export class GoogleDirectService {
     } catch (error) {
       console.error('Error analyzing audio:', error)
       throw new Error(`Audio analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  // ドキュメント理解
+  async analyzeDocument(documentData: string, mimeType: string, textPrompt?: string): Promise<DocumentResponse> {
+    if (!this.ai) {
+      throw new Error('Google Direct Service not configured. Call configure() first.')
+    }
+
+    const startTime = Date.now()
+    const prompt = textPrompt || 'このドキュメントの内容を詳しく説明してください。'
+
+    try {
+      const response = await this.ai.models.generateContent({
+        model: this.currentModel,
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: prompt },
+              { inlineData: { data: documentData, mimeType: mimeType } }
+            ]
+          }
+        ]
+      })
+
+      const endTime = Date.now()
+
+      return {
+        text: response.text || '',
+        analysis: response.text || '',
+        tokens: (response.text || '').length,
+        duration: endTime - startTime,
+        documentType: mimeType
+      }
+    } catch (error) {
+      console.error('Error analyzing document:', error)
+      throw new Error(`Document analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
