@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Send, AtSign, Infinity as InfinityIcon, ChevronUp, Image as ImageIcon, FileText, Folder, Code, BookOpen, GitBranch, MessageSquare, Globe, Link, Clock, AlertTriangle, Search, Hash, Command, X } from 'lucide-react'
+import { Send, AtSign, Infinity as InfinityIcon, ChevronUp, Image as ImageIcon, FileText, Folder, Code, BookOpen, GitBranch, MessageSquare, Globe, Link, Clock, AlertTriangle, Search, Hash, Command, X, Paperclip, Square } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ModelSettings, AVAILABLE_PROVIDERS } from '@/types/ai-sdk'
 import { CircleSpinner } from '@/components/ui/circle-spinner'
 import { JumpingDots } from '@/components/ui/jumping-dots'
-import { FilePreview } from './file-preview'
+import { UpArrowIcon } from '@/components/ui/up-arrow-icon'
+
 
 interface PromptInputBoxProps {
   onSend: (message: string, contexts?: SelectedContext[]) => void
   onAttachFiles: (files: File[]) => void
+  onStop?: () => void // 停止コールバック
   disabled?: boolean
   placeholder?: string
   className?: string
@@ -21,6 +23,7 @@ interface PromptInputBoxProps {
   loadingState?: 'idle' | 'text' | 'media'
   selectedFiles?: File[]
   currentProviderConfig?: { providerId: string; modelId: string } | null
+  isGenerating?: boolean // 生成中かどうかの状態
 }
 
 interface ModelOption {
@@ -54,6 +57,7 @@ interface SelectedContext {
 export const PromptInputBox: React.FC<PromptInputBoxProps> = ({
   onSend,
   onAttachFiles,
+  onStop,
   disabled = false,
   placeholder = "Plan, search, build anything",
   className,
@@ -64,6 +68,7 @@ export const PromptInputBox: React.FC<PromptInputBoxProps> = ({
   loadingState = 'idle',
   selectedFiles = [],
   currentProviderConfig = null,
+  isGenerating = false,
 }) => {
   const [message, setMessage] = useState('')
   const [isRecording, setIsRecording] = useState(false)
@@ -172,6 +177,12 @@ export const PromptInputBox: React.FC<PromptInputBoxProps> = ({
     }
   }
 
+  const handleStop = () => {
+    if (onStop) {
+      onStop()
+    }
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -186,7 +197,53 @@ export const PromptInputBox: React.FC<PromptInputBoxProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files) {
-      onAttachFiles(Array.from(files))
+      console.log('=== ファイル選択 ===')
+      console.log('選択されたファイル数:', files.length)
+      
+      const fileArray = Array.from(files)
+      fileArray.forEach((file, index) => {
+        console.log(`ファイル ${index + 1}:`, {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          sizeMB: (file.size / 1024 / 1024).toFixed(2) + 'MB'
+        })
+        
+        // 動画ファイルの特別処理
+        if (file.type.startsWith('video/') || 
+            ['.mp4', '.avi', '.mov', '.wmv', '.webm', '.mkv', '.m4v', '.3gp', '.ogv', '.flv']
+            .some(ext => file.name.toLowerCase().endsWith(ext))) {
+          console.log('動画ファイルとして認識:', file.name)
+          
+          // 動画ファイルのMIMEタイプを確認・修正
+          const extension = file.name.split('.').pop()?.toLowerCase()
+          const mimeTypeMap: Record<string, string> = {
+            'mp4': 'video/mp4',
+            'avi': 'video/x-msvideo',
+            'mov': 'video/quicktime',
+            'wmv': 'video/x-ms-wmv',
+            'webm': 'video/webm',
+            'mkv': 'video/x-matroska',
+            'm4v': 'video/mp4',
+            '3gp': 'video/3gpp',
+            'ogv': 'video/ogg',
+            'flv': 'video/x-flv'
+          }
+          
+          if (extension && mimeTypeMap[extension]) {
+            console.log(`動画ファイルのMIMEタイプを修正: ${file.type} -> ${mimeTypeMap[extension]}`)
+            // 新しいBlobを作成してMIMEタイプを修正
+            const correctedBlob = new Blob([file], { type: mimeTypeMap[extension] })
+            const correctedFile = new File([correctedBlob], file.name, { type: mimeTypeMap[extension] })
+            fileArray[index] = correctedFile
+          }
+        }
+      })
+      
+      onAttachFiles(fileArray)
+      
+      // ファイル入力をリセット（同じファイルを再度選択できるように）
+      e.target.value = ''
     }
   }
 
@@ -415,7 +472,7 @@ export const PromptInputBox: React.FC<PromptInputBoxProps> = ({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           disabled={disabled}
-          className="min-h-[60px] max-h-[120px] resize-none text-sm rounded-lg border-border bg-input pr-20"
+          className="min-h-[100px] max-h-[200px] resize-none text-sm rounded-lg border-border bg-input pr-20"
           rows={1}
         />
         
@@ -500,7 +557,7 @@ export const PromptInputBox: React.FC<PromptInputBoxProps> = ({
             ref={fileInputRef}
             type="file"
             multiple
-            accept="image/*,video/*,audio/*,.pdf,.txt,.md,.json"
+            accept="image/*,video/*,audio/*,.pdf,.txt,.md,.json,.csv,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
             onChange={handleFileChange}
             className="hidden"
             aria-label="Select files"
@@ -511,22 +568,29 @@ export const PromptInputBox: React.FC<PromptInputBoxProps> = ({
             size="sm"
             className="h-6 w-6 p-0 rounded border-border text-muted-foreground hover:bg-accent"
             disabled={disabled}
+            title="ファイルを添付 (画像、動画、音声、ドキュメント)"
           >
-            <ImageIcon className="w-3 h-3" />
+            <Paperclip className="w-3 h-3" />
           </Button>
           
           <Button
-            onClick={handleSend}
+            onClick={isGenerating ? handleStop : handleSend}
             disabled={!message.trim() || disabled}
             size="sm"
-            className="h-6 w-6 p-0 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+            className={cn(
+              "h-6 w-6 p-0 rounded-full",
+              isGenerating 
+                ? "bg-red-500 text-white hover:bg-red-600" 
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            )}
+            title={isGenerating ? "生成を停止" : "送信"}
           >
             {loadingState === 'media' ? (
               <CircleSpinner size="sm" className="text-white" />
-            ) : loadingState === 'text' ? (
-              <JumpingDots className="text-white" />
+            ) : isGenerating ? (
+              <Square className="w-3 h-3" />
             ) : (
-              <Send className="w-3 h-3" />
+              <UpArrowIcon className="w-3 h-3" />
             )}
           </Button>
         </div>

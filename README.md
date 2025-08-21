@@ -1,5 +1,82 @@
 # Armis - AI-Powered Development Environment
 
+## Gemini File Upload & Chat
+
+### 概要
+[参考記事](https://qiita.com/shokkaa/items/b137366cca35ce331c4d)に基づくGemini APIファイルアップロード機能を実装しました。これにより、画像やドキュメントをGeminiにアップロードして、AIとチャットできるようになります。
+
+### 主な機能
+
+#### 1. ファイルアップロード
+- 画像、PDF、テキストファイルのアップロード
+- 自動MIMEタイプ判定
+- アップロード進捗の表示
+
+#### 2. ファイルについてのチャット
+- 単一質問の送信
+- 複数質問の連続実行
+- トークン使用量の表示
+
+#### 3. 統合されたUI
+- 直感的なファイルアップロードインターフェース
+- リアルタイムのチャット応答
+- ローディング状態の表示
+
+### 使用方法
+
+#### 1. 環境変数の設定
+```bash
+# .envファイルを作成
+VITE_GOOGLE_API_KEY=your_google_api_key_here
+```
+
+#### 2. アプリケーションでの使用
+```typescript
+import { GeminiFileUpload } from '@/components/generative-ui/GeminiFileUpload'
+
+// 使用例
+<GeminiFileUpload 
+  apiKey={process.env.VITE_GOOGLE_API_KEY}
+  model="gemini-1.5-flash"
+/>
+```
+
+#### 3. プログラムでの使用
+```typescript
+import { GeminiFileService } from '@/services/llm/gemini-file-service'
+
+const geminiService = new GeminiFileService()
+await geminiService.configure(apiKey, 'gemini-1.5-flash')
+
+// ファイルアップロード
+const uploadResponse = await geminiService.uploadFile(filePath, mimeType, displayName)
+
+// ファイルについてチャット
+const response = await geminiService.chatAboutFile(uploadResponse.file.uri, question)
+```
+
+### 実装されたコンポーネント
+
+#### 1. GeminiFileService
+- ファイルアップロード機能
+- チャット機能
+- 複数質問の連続実行
+- MIMEタイプ自動判定
+
+#### 2. GeminiFileTools
+- LLM Managerとの統合
+- ツールベースの実行
+- エラーハンドリング
+
+#### 3. GeminiFileUpload UI
+- ファイル選択とアップロード
+- 質問入力と送信
+- 応答表示
+- ローディング状態
+
+### 参考記事
+- [Gemini API ― File Upload/画像認識](https://qiita.com/shokkaa/items/b137366cca35ce331c4d)
+
 ## 改善されたストリーミング機能
 
 ### 概要

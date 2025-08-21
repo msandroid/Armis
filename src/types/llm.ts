@@ -4,7 +4,6 @@ export interface LLMConfig {
   temperature: number
   topP: number
   topK: number
-  repeatPenalty: number
 }
 
 export interface LLMResponse {
@@ -44,4 +43,47 @@ export interface UserIntent {
   parsedIntent: string
   context: Record<string, any>
   preferences: Record<string, any>
+}
+
+// Router Agent Types
+export type AgentType = 
+  | 'general' 
+  | 'code_assistant' 
+  | 'file_processor' 
+  | 'data_analyzer' 
+  | 'creative_writer'
+  | 'sequential_thinking'
+
+export interface AgentCapability {
+  type: AgentType
+  name: string
+  description: string
+  keywords: string[]
+  confidence: number // 0-1
+  maxTokens?: number
+  temperature?: number
+}
+
+export interface RouterDecision {
+  selectedAgent: AgentType
+  confidence: number
+  reasoning: string
+  fallbackAgent?: AgentType
+  context: Record<string, any>
+}
+
+export interface RouterAgentConfig {
+  defaultAgent: AgentType
+  confidenceThreshold: number
+  enableFallback: boolean
+  maxRetries: number
+}
+
+export interface AgentResponse {
+  agentType: AgentType
+  content: string
+  metadata: Record<string, any>
+  executionTime: number
+  success: boolean
+  error?: string
 }

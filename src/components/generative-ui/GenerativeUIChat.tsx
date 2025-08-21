@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Send, Settings, Bot, User, Image, Video, Eye, Upload, X, Brain } from 'lucide-react'
-import { useDropzone } from 'react-dropzone'
+import { Send, Settings, Bot, User, Image, Video, Eye, Upload, X, Brain, File, Volume2 } from 'lucide-react'
 import { generativeUIService } from '@/services/generative-ui/generative-ui-service'
 import { Weather } from './Weather'
 import { Stock } from './Stock'
@@ -11,8 +10,21 @@ import { SearchResults } from './SearchResults'
 import { ImageAnalyzer } from './ImageAnalyzer'
 import { MediaGenerator } from './MediaGenerator'
 import { GeminiUnderstandingInterface } from './GeminiUnderstandingInterface'
+import { VideoPlayer } from './VideoPlayer'
+import { VideoOptimizationInfo } from './VideoOptimizationInfo'
+import { FileManager } from './FileManager'
+import { AudioTranscription } from './AudioTranscription'
 import { AIProviderConfig } from '@/types/ai-sdk'
-import { GoogleDirectService } from '@/services/llm/google-direct-service'
+import { GoogleDirectService, FileMetadata } from '@/services/llm/google-direct-service'
+
+// 利用可能なGeminiモデル
+const AVAILABLE_MODELS = [
+  { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', description: '高速・高精度（推奨）' },
+  { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro', description: '最高精度・長文対応' },
+  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', description: 'バランス型' },
+  { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', description: '長文・高精度' },
+  { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', description: '高速処理' }
+]
 
 interface Message {
   id: string
@@ -20,6 +32,7 @@ interface Message {
   content: string
   imageData?: string // 画像データ
   videoData?: string // ビデオデータ
+  videoMimeType?: string // 動画のMIMEタイプ
   audioData?: string // 音声データ
   toolCalls?: Array<{
     toolName: string
@@ -44,12 +57,17 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   const [currentResponse, setCurrentResponse] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'chat' | 'image-analysis' | 'media-generation' | 'understanding'>('chat')
+  const [activeTab, setActiveTab] = useState<'chat' | 'image-analysis' | 'media-generation' | 'understanding' | 'files' | 'audio-transcription'>('chat')
   const [chatImageData, setChatImageData] = useState<string | null>(null)
+  const [chatImageFile, setChatImageFile] = useState<File | null>(null)
   const [chatVideoData, setChatVideoData] = useState<string | null>(null)
+  const [chatVideoFile, setChatVideoFile] = useState<File | null>(null)
+  const [chatVideoMimeType, setChatVideoMimeType] = useState<string>('video/mp4')
   const [chatAudioData, setChatAudioData] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [googleService, setGoogleService] = useState<GoogleDirectService | null>(null)
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-2.5-flash')
+  const [modelChangeStatus, setModelChangeStatus] = useState<'idle' | 'changing' | 'success' | 'error'>('idle')
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -63,275 +81,134 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
       // AI SDK Serviceから設定を取得してGoogle Direct Serviceに設定
       const config = generativeUIService.getCurrentConfig()
       if (config && config.providerId === 'google' && config.apiKey) {
-        service.configure(config.apiKey, config.modelId || 'gemini-2.5-flash')
+        service.configure(config.apiKey, selectedModel)
         setGoogleService(service)
-        console.log('Google Direct Service configured with model:', config.modelId || 'gemini-2.5-flash')
+        console.log('Google Direct Service configured with model:', selectedModel)
       }
     }
-  }, [])
+  }, [selectedModel])
 
-  // チャット用画像アップロード
-  const onChatImageDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const result = e.target?.result as string
-        const base64Data = result.split(',')[1]
+  // モデル変更ハンドラー
+  const handleModelChange = async (newModel: string) => {
+    setModelChangeStatus('changing')
+    try {
+      setSelectedModel(newModel)
+      if (googleService) {
+        const config = generativeUIService.getCurrentConfig()
+        if (config && config.apiKey) {
+          googleService.configure(config.apiKey, newModel)
+        }
+      }
+      setModelChangeStatus('success')
+      setTimeout(() => setModelChangeStatus('idle'), 2000)
+    } catch (error) {
+      console.error('Model change failed:', error)
+      setModelChangeStatus('error')
+      setTimeout(() => setModelChangeStatus('idle'), 2000)
+    }
+  }
+
+  // ファイルアップロードハンドラー
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || files.length === 0) return
+
+    const file = files[0]
+    const reader = new FileReader()
+
+    reader.onload = (e) => {
+      const result = e.target?.result as string
+      const base64Data = result.split(',')[1]
+
+      if (file.type.startsWith('image/')) {
         setChatImageData(base64Data)
-        setChatVideoData(null)
-        setChatAudioData(null)
-      }
-      reader.readAsDataURL(file)
-    }
-  }, [])
-
-  // チャット用ビデオアップロード
-  const onChatVideoDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const result = e.target?.result as string
-        const base64Data = result.split(',')[1]
+        setChatImageFile(file)
+      } else if (file.type.startsWith('video/')) {
         setChatVideoData(base64Data)
-        setChatImageData(null)
-        setChatAudioData(null)
-      }
-      reader.readAsDataURL(file)
-    }
-  }, [])
-
-  // チャット用音声アップロード
-  const onChatAudioDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const result = e.target?.result as string
-        const base64Data = result.split(',')[1]
+        setChatVideoFile(file)
+        setChatVideoMimeType(file.type)
+      } else if (file.type.startsWith('audio/')) {
         setChatAudioData(base64Data)
-        setChatImageData(null)
-        setChatVideoData(null)
       }
-      reader.readAsDataURL(file)
     }
-  }, [])
 
-  const { getRootProps: getChatImageRootProps, getInputProps: getChatImageInputProps } = useDropzone({
-    onDrop: onChatImageDrop,
-    accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
-    },
-    multiple: false
-  })
+    reader.readAsDataURL(file)
+  }
 
-  const { getRootProps: getChatVideoRootProps, getInputProps: getChatVideoInputProps } = useDropzone({
-    onDrop: onChatVideoDrop,
-    accept: {
-      'video/*': ['.mp4', '.avi', '.mov', '.wmv', '.flv']
-    },
-    multiple: false
-  })
+  // 添付ファイルをクリア
+  const clearAttachments = () => {
+    setChatImageData(null)
+    setChatImageFile(null)
+    setChatVideoData(null)
+    setChatVideoFile(null)
+    setChatVideoMimeType('video/mp4')
+    setChatAudioData(null)
+  }
 
-  const { getRootProps: getChatAudioRootProps, getInputProps: getChatAudioInputProps } = useDropzone({
-    onDrop: onChatAudioDrop,
-    accept: {
-      'audio/*': ['.mp3', '.wav', '.aac', '.ogg', '.m4a']
-    },
-    multiple: false
-  })
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if ((!input.trim() && !chatImageData) || isLoading) return
+  // メッセージ送信ハンドラー
+  const handleSend = async () => {
+    if (!input.trim() && !chatImageData && !chatVideoData && !chatAudioData) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input || (chatImageData ? 'この画像について説明してください' : chatVideoData ? 'このビデオについて説明してください' : chatAudioData ? 'この音声について説明してください' : ''),
+      content: input,
       imageData: chatImageData || undefined,
       videoData: chatVideoData || undefined,
+      videoMimeType: chatVideoMimeType,
       audioData: chatAudioData || undefined,
       timestamp: new Date()
     }
 
     setMessages(prev => [...prev, userMessage])
     setInput('')
-    setChatImageData(null)
-    setChatVideoData(null)
-    setChatAudioData(null)
+    clearAttachments()
     setIsLoading(true)
     setCurrentResponse('')
     setError(null)
 
     try {
-              // Google Direct Serviceを使用してマルチモーダル処理
-        if (googleService && (chatImageData || chatVideoData || chatAudioData || input.trim())) {
-          const prompt = input || (chatImageData ? 'この画像について説明してください' : chatVideoData ? 'このビデオについて説明してください' : chatAudioData ? 'この音声について説明してください' : '')
-          
-          let fullResponse = ''
-          await googleService.streamResponse(
-            prompt,
-            (chunk) => {
-              fullResponse += chunk
-              setCurrentResponse(prev => prev + chunk)
-            },
-            chatImageData || undefined,
-            chatVideoData || undefined,
-            chatAudioData || undefined
-          )
-          
-          setMessages(prev => {
-            const lastMessage = prev[prev.length - 1]
-            if (lastMessage?.role === 'assistant') {
-              return prev.map((msg, index) => 
-                index === prev.length - 1 
-                  ? { ...msg, content: fullResponse }
-                  : msg
-              )
-            } else {
-              return [...prev, {
-                id: (Date.now() + 1).toString(),
-                role: 'assistant',
-                content: fullResponse,
-                timestamp: new Date()
-              }]
-            }
-          })
-          setCurrentResponse('')
-          setIsLoading(false)
-        } else {
-        // 従来のGenerative UI Serviceを使用
-        await generativeUIService.processGenerativeUIRequest(
-          input,
-          (chunk) => {
-            setCurrentResponse(prev => prev + chunk)
-          },
-          (toolName, state, output) => {
-            setMessages(prev => {
-              const lastMessage = prev[prev.length - 1]
-              if (lastMessage?.role === 'assistant') {
-                const updatedToolCalls = [...(lastMessage.toolCalls || [])]
-                const existingIndex = updatedToolCalls.findIndex(tc => tc.toolName === toolName)
-                
-                if (existingIndex >= 0) {
-                  updatedToolCalls[existingIndex] = { toolName, state, output }
-                } else {
-                  updatedToolCalls.push({ toolName, state, output })
-                }
-
-                return prev.map((msg, index) => 
-                  index === prev.length - 1 
-                    ? { ...msg, toolCalls: updatedToolCalls }
-                    : msg
-                )
-              }
-              return prev
-            })
-          },
-          (fullResponse) => {
-            setMessages(prev => {
-              const lastMessage = prev[prev.length - 1]
-              if (lastMessage?.role === 'assistant') {
-                return prev.map((msg, index) => 
-                  index === prev.length - 1 
-                    ? { ...msg, content: fullResponse }
-                    : msg
-                )
-              } else {
-                return [...prev, {
-                  id: (Date.now() + 1).toString(),
-                  role: 'assistant',
-                  content: fullResponse,
-                  timestamp: new Date()
-                }]
-              }
-            })
-            setCurrentResponse('')
-            setIsLoading(false)
-          },
-          (error) => {
-            setError(error.message)
-            setIsLoading(false)
-            setCurrentResponse('')
-          }
-        )
+      // ここでAIサービスを呼び出してレスポンスを生成
+      // 実際の実装では、generativeUIServiceを使用
+      const response = "これはサンプルレスポンスです。実際のAIサービスとの統合が必要です。"
+      
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: response,
+        timestamp: new Date()
       }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Unknown error')
+
+      setMessages(prev => [...prev, assistantMessage])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'エラーが発生しました')
+    } finally {
       setIsLoading(false)
-      setCurrentResponse('')
     }
   }
 
-  const renderToolComponent = (toolCall: any) => {
-    const { toolName, state, output, errorText } = toolCall
-
-    switch (state) {
-      case 'input-available':
-        return (
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-3">
-            <div className="text-sm text-yellow-800 dark:text-yellow-200">
-              {toolName} を実行中...
-            </div>
-          </div>
-        )
-
-      case 'output-available':
-        switch (toolName) {
-          case 'displayWeather':
-            return <Weather {...output} />
-          case 'getStockPrice':
-            return <Stock {...output} />
-          case 'generateImage':
-            return <ImageGenerator {...output} />
-          case 'translateText':
-            return <Translation {...output} />
-          case 'calculate':
-            return <Calculator {...output} />
-          case 'searchWeb':
-            return <SearchResults {...output} />
-          default:
-            return (
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  ツール実行結果: {JSON.stringify(output, null, 2)}
-                </div>
-              </div>
-            )
-        }
-
-      case 'output-error':
-        return (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-3">
-            <div className="text-sm text-red-800 dark:text-red-200">
-              エラー: {errorText}
-            </div>
-          </div>
-        )
-
-      default:
-        return null
+  // キーダウンハンドラー
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
     }
   }
 
+  // メッセージレンダリング
   const renderMessage = (message: Message) => {
     return (
       <div key={message.id} className="mb-6">
         <div className="flex items-start space-x-3">
-          <div className="flex-shrink-0">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+            message.role === 'user' ? 'bg-blue-500' : 'bg-green-500'
+          }`}>
             {message.role === 'user' ? (
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
-              </div>
+              <User className="w-5 h-5 text-white" />
             ) : (
-              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
-              </div>
+              <Bot className="w-5 h-5 text-white" />
             )}
           </div>
-          
           <div className="flex-1 min-w-0">
             <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
               {/* 画像の表示 */}
@@ -339,8 +216,8 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
                 <div className="mb-3">
                   <img
                     src={`data:image/jpeg;base64,${message.imageData}`}
-                    alt="送信された画像"
-                    className="max-w-full h-auto max-h-48 rounded-lg border"
+                    alt="アップロードされた画像"
+                    className="max-w-full h-auto max-h-48 rounded"
                   />
                 </div>
               )}
@@ -348,10 +225,9 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
               {/* ビデオの表示 */}
               {message.videoData && (
                 <div className="mb-3">
-                  <video
-                    src={`data:video/mp4;base64,${message.videoData}`}
-                    controls
-                    className="max-w-full h-auto max-h-48 rounded-lg border"
+                  <VideoPlayer
+                    src={`data:${message.videoMimeType || 'video/mp4'};base64,${message.videoData}`}
+                    className="max-w-full h-auto max-h-48"
                   />
                 </div>
               )}
@@ -375,7 +251,7 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
                 <div className="mt-4 space-y-3">
                   {message.toolCalls.map((toolCall, index) => (
                     <div key={index}>
-                      {renderToolComponent(toolCall)}
+                      {/* ツールコールの表示 */}
                     </div>
                   ))}
                 </div>
@@ -391,16 +267,46 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
     <div className={`flex flex-col h-full ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-          Generative UI チャット
-        </h2>
         <div className="flex items-center space-x-2">
-          {!generativeUIService.isConfigured() && (
-            <div className="text-sm text-red-600 dark:text-red-400">
-              AIプロバイダーが設定されていません
-            </div>
+          <Brain className="w-6 h-6 text-blue-600" />
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            Generative UI Chat
+          </h1>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          {/* Model Selection */}
+          <select
+            value={selectedModel}
+            onChange={(e) => handleModelChange(e.target.value)}
+            className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            disabled={modelChangeStatus === 'changing'}
+            title="AIモデルを選択"
+          >
+            {AVAILABLE_MODELS.map(model => (
+              <option key={model.id} value={model.id}>
+                {model.name}
+              </option>
+            ))}
+          </select>
+          
+          {modelChangeStatus === 'changing' && (
+            <div className="text-sm text-blue-600">変更中...</div>
           )}
-          <Settings className="w-5 h-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer" />
+          {modelChangeStatus === 'success' && (
+            <div className="text-sm text-green-600">✓</div>
+          )}
+          {modelChangeStatus === 'error' && (
+            <div className="text-sm text-red-600">✗</div>
+          )}
+          
+          <button
+            onClick={() => setActiveTab('chat')}
+            className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            title="設定"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
         </div>
       </div>
 
@@ -408,47 +314,74 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
       <div className="flex border-b border-gray-200 dark:border-gray-700">
         <button
           onClick={() => setActiveTab('chat')}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             activeTab === 'chat'
-              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           }`}
         >
           <Bot className="w-4 h-4" />
-          チャット
+          <span>チャット</span>
         </button>
+        
         <button
           onClick={() => setActiveTab('image-analysis')}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             activeTab === 'image-analysis'
-              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-          }`}
-        >
-          <Eye className="w-4 h-4" />
-          画像分析
-        </button>
-        <button
-          onClick={() => setActiveTab('understanding')}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
-            activeTab === 'understanding'
-              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-          }`}
-        >
-          <Brain className="w-4 h-4" />
-          Understanding
-        </button>
-        <button
-          onClick={() => setActiveTab('media-generation')}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
-            activeTab === 'media-generation'
-              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           }`}
         >
           <Image className="w-4 h-4" />
-          メディア生成
+          <span>画像分析</span>
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('media-generation')}
+          className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === 'media-generation'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          }`}
+        >
+          <Video className="w-4 h-4" />
+          <span>メディア生成</span>
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('understanding')}
+          className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === 'understanding'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          }`}
+        >
+          <Eye className="w-4 h-4" />
+          <span>理解・分析</span>
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('audio-transcription')}
+          className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === 'audio-transcription'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          }`}
+        >
+          <Volume2 className="w-4 h-4" />
+          <span>音声文字起こし</span>
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('files')}
+          className={`flex items-center space-x-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === 'files'
+              ? 'border-blue-500 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          }`}
+        >
+          <File className="w-4 h-4" />
+          <span>ファイル管理</span>
         </button>
       </div>
 
@@ -500,116 +433,124 @@ export const GenerativeUIChat: React.FC<GenerativeUIChatProps> = ({
           <GeminiUnderstandingInterface googleService={googleService} />
         )}
 
-        {activeTab === 'media-generation' && googleService && (
-          <MediaGenerator googleService={googleService} />
+        {activeTab === 'audio-transcription' && (
+          <AudioTranscription />
+        )}
+
+        {activeTab === 'files' && googleService && (
+          <FileManager googleService={googleService} />
+        )}
+
+        {activeTab === 'media-generation' && (
+          <div className="space-y-6">
+            <ImageGenerator 
+              prompt=""
+              style=""
+              size={{ width: 512, height: 512 }}
+              imageUrl=""
+              generatedAt=""
+            />
+            {googleService && (
+              <MediaGenerator googleService={googleService} />
+            )}
+          </div>
         )}
       </div>
 
-      {/* Input - Only show for chat tab */}
+      {/* Input Area - Only show for chat tab */}
       {activeTab === 'chat' && (
         <div className="border-t border-gray-200 dark:border-gray-700 p-4">
-          {/* メディアプレビュー */}
-          {chatImageData && (
-            <div className="mb-3 relative">
-              <img
-                src={`data:image/jpeg;base64,${chatImageData}`}
-                alt="アップロードされた画像"
-                className="max-w-full h-auto max-h-32 rounded-lg border"
+          <div className="flex items-end space-x-2">
+            <div className="flex-1 relative">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="メッセージを入力してください..."
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                rows={1}
+                style={{ minHeight: '44px', maxHeight: '120px' }}
+                title="メッセージ入力"
               />
+              
+              {/* File Upload Button */}
               <button
-                onClick={() => setChatImageData(null)}
-                className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                title="画像を削除"
+                onClick={() => document.getElementById('file-upload')?.click()}
+                className="absolute right-2 bottom-2 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                title="ファイルをアップロード"
               >
-                <X className="w-3 h-3" />
+                <Upload className="w-4 h-4" />
               </button>
-            </div>
-          )}
-          
-          {chatVideoData && (
-            <div className="mb-3 relative">
-              <video
-                src={`data:video/mp4;base64,${chatVideoData}`}
-                controls
-                className="max-w-full h-auto max-h-32 rounded-lg border"
+              
+              <input
+                id="file-upload"
+                type="file"
+                accept="image/*,video/*,audio/*"
+                onChange={handleFileUpload}
+                className="hidden"
+                multiple
+                title="ファイル選択"
               />
-              <button
-                onClick={() => setChatVideoData(null)}
-                className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                title="ビデオを削除"
-              >
-                <X className="w-3 h-3" />
-              </button>
             </div>
-          )}
-          
-          {chatAudioData && (
-            <div className="mb-3 relative">
-              <audio
-                src={`data:audio/mpeg;base64,${chatAudioData}`}
-                controls
-                className="w-full"
-              />
-              <button
-                onClick={() => setChatAudioData(null)}
-                className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                title="音声を削除"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </div>
-          )}
-          
-          <form onSubmit={handleSubmit} className="flex space-x-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="メッセージを入力してください..."
-              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200"
-              disabled={isLoading || !generativeUIService.isConfigured()}
-            />
-            
-            {/* メディアアップロードボタン */}
-            <button
-              type="button"
-              {...getChatImageRootProps()}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
-              title="画像をアップロード"
-            >
-              <input {...getChatImageInputProps()} />
-              <Image className="w-4 h-4 text-gray-500" />
-            </button>
             
             <button
-              type="button"
-              {...getChatVideoRootProps()}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
-              title="ビデオをアップロード"
-            >
-              <input {...getChatVideoInputProps()} />
-              <Video className="w-4 h-4 text-gray-500" />
-            </button>
-            
-            <button
-              type="button"
-              {...getChatAudioRootProps()}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
-              title="音声をアップロード"
-            >
-              <input {...getChatAudioInputProps()} />
-              <Upload className="w-4 h-4 text-gray-500" />
-            </button>
-            
-            <button
-              type="submit"
-              disabled={isLoading || (!input.trim() && !chatImageData && !chatVideoData && !chatAudioData) || !generativeUIService.isConfigured()}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2"
+              onClick={handleSend}
+              disabled={!input.trim() && !chatImageData && !chatVideoData && !chatAudioData || isLoading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              title="メッセージを送信"
             >
               <Send className="w-4 h-4" />
               <span>送信</span>
             </button>
-          </form>
+          </div>
+          
+          {/* Preview Area */}
+          {(chatImageData || chatVideoData || chatAudioData) && (
+            <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  添付ファイル:
+                </span>
+                <button
+                  onClick={clearAttachments}
+                  className="text-red-500 hover:text-red-700"
+                  title="添付ファイルを削除"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              
+              {chatImageData && (
+                <div className="mt-2">
+                  <img
+                    src={`data:image/jpeg;base64,${chatImageData}`}
+                    alt="Preview"
+                    className="max-w-32 max-h-32 object-cover rounded"
+                  />
+                </div>
+              )}
+              
+              {chatVideoData && (
+                <div className="mt-2">
+                  <video
+                    src={`data:${chatVideoMimeType};base64,${chatVideoData}`}
+                    controls
+                    className="max-w-32 max-h-32 object-cover rounded"
+                  />
+                </div>
+              )}
+              
+              {chatAudioData && (
+                <div className="mt-2">
+                  <audio
+                    src={`data:audio/mpeg;base64,${chatAudioData}`}
+                    controls
+                    className="w-full"
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

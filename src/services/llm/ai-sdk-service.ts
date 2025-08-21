@@ -18,6 +18,7 @@ export class AISDKService {
   private providers: Map<string, any> = new Map()
   private isConfigured = false
   private googleDirectService: GoogleDirectService | null = null
+  private currentAbortController: AbortController | null = null // 停止機能用
 
   constructor() {
     this.initializeProviders()
@@ -317,9 +318,22 @@ export class AISDKService {
       throw new Error('No provider configured. Call configureProvider() first.')
     }
 
+    // 新しいAbortControllerを作成
+    this.currentAbortController = new AbortController()
+
     // Google providerの場合は直接サービスを使用
     if (this.currentConfig.providerId === 'google' && this.googleDirectService) {
-      return await this.googleDirectService.streamResponse(prompt, onChunk)
+      try {
+        return await this.googleDirectService.streamResponse(prompt, onChunk, undefined, undefined, undefined, undefined, this.currentAbortController)
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.log('Google Direct Service streaming was aborted by user')
+          return
+        }
+        throw error
+      } finally {
+        this.currentAbortController = null
+      }
     }
 
     // 他のプロバイダーはAI SDKの最新ストリーミング機能を使用
@@ -348,6 +362,12 @@ export class AISDKService {
       // ストリーミング処理の改善
       let isFirstChunk = true
       for await (const chunk of stream.textStream) {
+        // 停止チェック
+        if (this.currentAbortController?.signal.aborted) {
+          console.log('Streaming stopped by user')
+          break
+        }
+        
         // 最初のチャンクの場合は即座に送信
         if (isFirstChunk) {
           onChunk(chunk)
@@ -358,13 +378,19 @@ export class AISDKService {
         }
       }
 
-      // ストリーミング完了時の処理
-      if (stream.finishReason) {
+      // ストリーミング完了時の処理（停止されていない場合のみ）
+      if (!this.currentAbortController?.signal.aborted && stream.finishReason) {
         console.log('Streaming completed with reason:', stream.finishReason)
       }
 
     } catch (error) {
       console.error('Error streaming response with AI SDK:', error)
+      
+      // 停止によるエラーの場合は特別処理
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log('Streaming was aborted by user')
+        return
+      }
       
       // より詳細なエラーハンドリング
       if (error instanceof Error) {
@@ -380,6 +406,17 @@ export class AISDKService {
       }
       
       throw new Error(`ストリーミングに失敗しました: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      this.currentAbortController = null
+    }
+  }
+
+  // 停止機能
+  stopGeneration(): void {
+    if (this.currentAbortController) {
+      this.currentAbortController.abort()
+      this.currentAbortController = null
+      console.log('Generation stopped by user')
     }
   }
 
@@ -395,6 +432,9 @@ export class AISDKService {
       onError?.(error)
       throw error
     }
+
+    // 新しいAbortControllerを作成
+    this.currentAbortController = new AbortController()
 
     try {
       const model = await this.getConfiguredModel(
@@ -420,18 +460,35 @@ export class AISDKService {
       let fullResponse = ''
       
       for await (const chunk of stream.textStream) {
+        // 停止チェック
+        if (this.currentAbortController?.signal.aborted) {
+          console.log('Streaming stopped by user')
+          break
+        }
+        
         fullResponse += chunk
         onChunk(chunk)
       }
 
-      // 完了時のコールバック
-      onComplete?.(fullResponse)
+      // 完了時のコールバック（停止されていない場合のみ）
+      if (!this.currentAbortController?.signal.aborted) {
+        onComplete?.(fullResponse)
+      }
 
     } catch (error) {
       console.error('Error in streamChatResponse:', error)
+      
+      // 停止によるエラーの場合は特別処理
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log('Streaming was aborted by user')
+        return
+      }
+      
       const errorObj = error instanceof Error ? error : new Error('Unknown streaming error')
       onError?.(errorObj)
       throw errorObj
+    } finally {
+      this.currentAbortController = null
     }
   }
 
@@ -448,6 +505,9 @@ export class AISDKService {
     if (!this.currentConfig || !this.isConfigured) {
       throw new Error('No provider configured. Call configureProvider() first.')
     }
+
+    // 新しいAbortControllerを作成
+    this.currentAbortController = new AbortController()
 
     try {
       const model = await this.getConfiguredModel(
@@ -477,6 +537,12 @@ export class AISDKService {
       
       // 高速ストリーミング処理
       for await (const chunk of stream.textStream) {
+        // 停止チェック
+        if (this.currentAbortController?.signal.aborted) {
+          console.log('Fast streaming stopped by user')
+          break
+        }
+        
         fullResponse += chunk
         onChunk(chunk)
       }
@@ -485,7 +551,16 @@ export class AISDKService {
 
     } catch (error) {
       console.error('Error in streamFastResponse:', error)
+      
+      // 停止によるエラーの場合は特別処理
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log('Fast streaming was aborted by user')
+        return ''
+      }
+      
       throw new Error(`Fast streaming failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      this.currentAbortController = null
     }
   }
 
@@ -682,8 +757,7 @@ export class AISDKService {
           messages: [{ role: 'user' as const, content: prompt }],
           temperature,
           topP: 0.9,
-          topK: 40,
-          repeatPenalty: 1.1
+          topK: 40
         }
         
       default:
