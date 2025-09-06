@@ -1,0 +1,703 @@
+---
+description: *.ts *.tsx
+alwaysApply: false
+---
+You are an expert in UI and UX design principles for software development.
+
+## Shadcn UI Framework Guidelines
+
+### Primary UI Framework
+- **Primary UI Framework**: Use Shadcn UI as the primary component library for all UI development.
+- **Component Selection**: Always prefer Shadcn UI components over custom implementations when available.
+- **Consistent Design System**: Leverage Shadcn UI's design tokens and component variants for consistency.
+- **Accessibility First**: Shadcn UI components are built with accessibility in mind - utilize these built-in features.
+- **Customization**: Use Shadcn UI's theming system and CSS variables for brand-specific customization.
+- **Component Composition**: Combine multiple Shadcn UI components to create complex interfaces rather than building from scratch.
+
+### Comprehensive Component Usage Guidelines
+
+#### Layout & Structure Components
+- **Card**: Use for content containers, product displays, and information grouping
+  - URL: https://ui.shadcn.com/docs/components/card
+  - Best for: Content organization, product cards, feature highlights
+- **Sheet**: Use for slide-out panels and mobile navigation
+  - URL: https://ui.shadcn.com/docs/components/sheet
+  - Best for: Mobile navigation, side panels, settings menus
+- **Dialog**: Use for modal dialogs and important user interactions
+  - URL: https://ui.shadcn.com/docs/components/dialog
+  - Best for: Confirmations, forms, detailed information display
+- **Drawer**: Use for slide-out content panels
+  - URL: https://ui.shadcn.com/docs/components/drawer
+  - Best for: Mobile navigation, side content, filters
+- **Sidebar**: Use for application navigation and content organization
+  - URL: https://ui.shadcn.com/docs/components/sidebar
+  - Best for: Dashboard layouts, application navigation
+- **Resizable**: Use for adjustable panels and layouts
+  - URL: https://ui.shadcn.com/docs/components/resizable
+  - Best for: Code editors, dashboard panels, customizable layouts
+
+#### Navigation Components
+- **Navigation Menu**: Use for main site navigation
+  - URL: https://ui.shadcn.com/docs/components/navigation-menu
+  - Best for: Primary navigation, mega menus
+- **Breadcrumb**: Use for hierarchical navigation
+  - URL: https://ui.shadcn.com/docs/components/breadcrumb
+  - Best for: Site navigation, file paths, category navigation
+- **Menubar**: Use for application menus and toolbars
+  - URL: https://ui.shadcn.com/docs/components/menubar
+  - Best for: Desktop application menus, toolbar actions
+- **Context Menu**: Use for right-click context menus
+  - URL: https://ui.shadcn.com/docs/components/context-menu
+  - Best for: File operations, item actions, quick actions
+
+#### Form Components
+- **Input**: Use for text input fields
+  - URL: https://ui.shadcn.com/docs/components/input
+  - Best for: Text entry, search fields, form inputs
+- **Textarea**: Use for multi-line text input
+  - URL: https://ui.shadcn.com/docs/components/textarea
+  - Best for: Comments, descriptions, long-form content
+- **Select**: Use for dropdown selections
+  - URL: https://ui.shadcn.com/docs/components/select
+  - Best for: Single choice selections, form fields
+- **Combobox**: Use for searchable dropdown selections
+  - URL: https://ui.shadcn.com/docs/components/combobox
+  - Best for: Searchable lists, autocomplete fields
+- **Checkbox**: Use for boolean selections
+  - URL: https://ui.shadcn.com/docs/components/checkbox
+  - Best for: Multiple choice selections, settings toggles
+- **Radio Group**: Use for single choice from multiple options
+  - URL: https://ui.shadcn.com/docs/components/radio-group
+  - Best for: Single choice selections, preference settings
+- **Switch**: Use for toggle switches
+  - URL: https://ui.shadcn.com/docs/components/switch
+  - Best for: On/off settings, feature toggles
+- **Slider**: Use for range selections
+  - URL: https://ui.shadcn.com/docs/components/slider
+  - Best for: Volume controls, price ranges, numeric inputs
+- **Input OTP**: Use for one-time password input
+  - URL: https://ui.shadcn.com/docs/components/input-otp
+  - Best for: Authentication codes, verification numbers
+- **Label**: Use for form field labels
+  - URL: https://ui.shadcn.com/docs/components/label
+  - Best for: Form accessibility, field identification
+- **Date Picker**: Use for date selection
+  - URL: https://ui.shadcn.com/docs/components/date-picker
+  - Best for: Date inputs, calendar selections
+- **Calendar**: Use for date display and selection
+  - URL: https://ui.shadcn.com/docs/components/calendar
+  - Best for: Date pickers, event calendars
+
+#### Interactive Components
+- **Button**: Use for primary actions and interactions
+  - URL: https://ui.shadcn.com/docs/components/button
+  - Best for: Form submissions, navigation, primary actions
+- **Toggle**: Use for state toggles
+  - URL: https://ui.shadcn.com/docs/components/toggle
+  - Best for: Feature toggles, state switches
+- **Toggle Group**: Use for grouped toggle options
+  - URL: https://ui.shadcn.com/docs/components/toggle-group
+  - Best for: View modes, filter options, grouped selections
+- **Dropdown Menu**: Use for action menus
+  - URL: https://ui.shadcn.com/docs/components/dropdown-menu
+  - Best for: Action menus, user account options
+- **Command**: Use for command palettes and search
+  - URL: https://ui.shadcn.com/docs/components/command
+  - Best for: Search interfaces, command palettes, autocomplete
+- **Popover**: Use for contextual information
+  - URL: https://ui.shadcn.com/docs/components/popover
+  - Best for: Tooltips, contextual menus, information overlays
+- **Tooltip**: Use for hover information
+  - URL: https://ui.shadcn.com/docs/components/tooltip
+  - Best for: Help text, additional information on hover
+- **Hover Card**: Use for rich hover content
+  - URL: https://ui.shadcn.com/docs/components/hover-card
+  - Best for: User profiles, product previews, rich tooltips
+
+#### Data Display Components
+- **Table**: Use for tabular data display
+  - URL: https://ui.shadcn.com/docs/components/table
+  - Best for: Data lists, user tables, information grids
+- **Data Table**: Use for advanced data tables with sorting and filtering
+  - URL: https://ui.shadcn.com/docs/components/data-table
+  - Best for: Complex data sets, admin interfaces, data management
+- **Badge**: Use for status indicators and labels
+  - URL: https://ui.shadcn.com/docs/components/badge
+  - Best for: Status indicators, tags, notifications
+- **Avatar**: Use for user profile images
+  - URL: https://ui.shadcn.com/docs/components/avatar
+  - Best for: User profiles, team members, profile pictures
+- **Progress**: Use for progress indicators
+  - URL: https://ui.shadcn.com/docs/components/progress
+  - Best for: Loading states, completion indicators, upload progress
+- **Skeleton**: Use for loading placeholders
+  - URL: https://ui.shadcn.com/docs/components/skeleton
+  - Best for: Loading states, content placeholders
+- **Chart**: Use for data visualization
+  - URL: https://ui.shadcn.com/docs/components/chart
+  - Best for: Analytics, data visualization, metrics display
+
+#### Content Organization Components
+- **Accordion**: Use for collapsible content sections
+  - URL: https://ui.shadcn.com/docs/components/accordion
+  - Best for: FAQs, collapsible sections, organized content
+- **Collapsible**: Use for expandable content
+  - URL: https://ui.shadcn.com/docs/components/collapsible
+  - Best for: Expandable sections, content organization
+- **Tabs**: Use for tabbed content organization
+  - URL: https://ui.shadcn.com/docs/components/tabs
+  - Best for: Content organization, feature sections, settings panels
+- **Carousel**: Use for image/content slideshows
+  - URL: https://ui.shadcn.com/docs/components/carousel
+  - Best for: Image galleries, product showcases, content slideshows
+- **Separator**: Use for visual content separation
+  - URL: https://ui.shadcn.com/docs/components/separator
+  - Best for: Content division, visual hierarchy
+- **Scroll Area**: Use for scrollable content containers
+  - URL: https://ui.shadcn.com/docs/components/scroll-area
+  - Best for: Long content, chat interfaces, scrollable panels
+
+#### Feedback & Notification Components
+- **Alert**: Use for important information display
+  - URL: https://ui.shadcn.com/docs/components/alert
+  - Best for: Warnings, important notices, status messages
+- **Alert Dialog**: Use for critical confirmations
+  - URL: https://ui.shadcn.com/docs/components/alert-dialog
+  - Best for: Delete confirmations, critical actions
+- **Toast**: Use for non-intrusive notifications
+  - URL: https://ui.shadcn.com/docs/components/toast
+  - Best for: Success messages, notifications, temporary feedback
+- **Sonner**: Use for modern toast notifications
+  - URL: https://ui.shadcn.com/docs/components/sonner
+  - Best for: Modern notification system, action feedback
+
+#### Animation & Loading Components
+- **Circle Spinner**: Use for media generation loading states
+  - Best for: Image generation, video processing, file uploads
+  - Implementation: Use CSS animations with Tailwind CSS classes
+  - Example: `<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>`
+- **Jumping Dots**: Use for text generation loading states
+  - Best for: AI text generation, chat responses, content loading
+  - Implementation: Use CSS animations with Tailwind CSS classes
+  - Example: `<div className="flex space-x-1"><div className="animate-bounce">.</div><div className="animate-bounce delay-100">.</div><div className="animate-bounce delay-200">.</div></div>`
+- **Progress**: Use for determinate loading states
+  - URL: https://ui.shadcn.com/docs/components/progress
+  - Best for: File uploads, data processing, step-by-step operations
+- **Skeleton**: Use for content loading placeholders
+  - URL: https://ui.shadcn.com/docs/components/skeleton
+  - Best for: Content loading, data fetching, initial page loads
+
+### Animation Guidelines
+- **Media Generation**: Always use Circle Spinner for media-related loading states
+- **Text Generation**: Always use Jumping Dots for text-related loading states
+- **Performance**: Use CSS animations over JavaScript animations for better performance
+- **Accessibility**: Ensure loading states are accessible to screen readers
+- **Consistency**: Maintain consistent animation timing and easing across the application
+- **User Feedback**: Provide clear visual feedback for all loading states
+
+#### Utility Components
+- **Aspect Ratio**: Use for maintaining image proportions
+  - URL: https://ui.shadcn.com/docs/components/aspect-ratio
+  - Best for: Image containers, video players, consistent layouts
+- **Typography**: Use for consistent text styling
+  - URL: https://ui.shadcn.com/docs/components/typography
+  - Best for: Consistent text hierarchy, content styling
+- **Pagination**: Use for page navigation
+  - URL: https://ui.shadcn.com/docs/components/pagination
+  - Best for: Data pagination, content navigation
+
+#### Form Integration
+- **React Hook Form**: Use for form state management
+  - URL: https://ui.shadcn.com/docs/components/react-hook-form
+  - Best for: Form validation, state management, form handling
+
+### Component Selection Guidelines
+1. **Start with Shadcn UI**: Always check if a Shadcn UI component exists before creating custom components
+2. **Component Composition**: Combine multiple Shadcn UI components to create complex interfaces
+3. **Consistent Styling**: Use Shadcn UI's design tokens and variants for consistent styling
+4. **Accessibility**: Leverage Shadcn UI's built-in accessibility features
+5. **Responsive Design**: Shadcn UI components are responsive by default
+6. **Performance**: Shadcn UI components are optimized for performance
+
+### Implementation Best Practices
+- **Form Components**: Use Shadcn UI form components with react-hook-form integration
+- **Layout Components**: Utilize Shadcn UI layout components for consistent spacing and structure
+- **Navigation**: Use Shadcn UI navigation components for consistent navigation patterns
+- **Feedback Components**: Implement Shadcn UI feedback components for user feedback
+- **Data Display**: Use Shadcn UI data components for consistent data presentation
+- **Interactive Elements**: Leverage Shadcn UI interactive components for user interactions
+
+### Visual Design
+- Establish a clear visual hierarchy to guide user attention
+- Choose a cohesive color palette that reflects the brand (ask the user for guidelines)
+- Use typography effectively for readability and emphasis
+- Maintain sufficient contrast for legibility (WCAG 2.1 AA standard)
+- Design with a consistent style across the application
+- **Shadcn UI Integration**: Use Shadcn UI's design tokens for colors, spacing, and typography
+
+### Interaction Design
+- Create intuitive navigation patterns
+- Use familiar UI components to reduce cognitive load
+- Provide clear calls-to-action to guide user behavior
+- Implement responsive design for cross-device compatibility
+- Use animations judiciously to enhance user experience
+- **Shadcn UI Patterns**: Follow Shadcn UI's interaction patterns for consistency
+
+### Accessibility
+- Follow WCAG guidelines for web accessibility
+- Use semantic HTML to enhance screen reader compatibility
+- Provide alternative text for images and non-text content
+- Ensure keyboard navigability for all interactive elements
+- Test with various assistive technologies
+- **Shadcn UI Accessibility**: Leverage Shadcn UI's built-in accessibility features
+
+### Performance Optimization
+- Optimize images and assets to minimize load times
+- Implement lazy loading for non-critical resources
+- Use code splitting to improve initial load performance
+- Monitor and optimize Core Web Vitals (LCP, FID, CLS)
+- **Shadcn UI Performance**: Shadcn UI components are optimized for performance - avoid unnecessary customizations
+
+### User Feedback
+- Incorporate clear feedback mechanisms for user actions
+- Use loading indicators for asynchronous operations
+- Provide clear error messages and recovery options
+- Implement analytics to track user behavior and pain points
+- **Shadcn UI Feedback**: Use Shadcn UI's Toast, Alert, and Progress components for user feedback
+
+### Information Architecture
+- Organize content logically to facilitate easy access
+- Use clear labeling and categorization for navigation
+- Implement effective search functionality
+- Create a sitemap to visualize overall structure
+- **Shadcn UI Structure**: Use Shadcn UI's Card, Sheet, and Dialog components for content organization
+
+### Mobile-First Design
+- Design for mobile devices first, then scale up
+- Use touch-friendly interface elements
+- Implement gestures for common actions (swipe, pinch-to-zoom)
+- Consider thumb zones for important interactive elements
+- **Shadcn UI Mobile**: Shadcn UI components are mobile-responsive by default
+
+### Consistency
+- Develop and adhere to a design system
+- Use consistent terminology throughout the interface
+- Maintain consistent positioning of recurring elements
+- Ensure visual consistency across different sections
+- **Shadcn UI Consistency**: Use Shadcn UI's component variants and design tokens for consistency
+
+### Testing and Iteration
+- Conduct A/B testing for critical design decisions
+- Use heatmaps and session recordings to analyze user behavior
+- Regularly gather and incorporate user feedback
+- Continuously iterate on designs based on data and feedback
+- **Shadcn UI Testing**: Test Shadcn UI components in isolation before integration
+
+### Documentation
+- Maintain a comprehensive style guide
+- Document design patterns and component usage
+- Create user flow diagrams for complex interactions
+- Keep design assets organized and accessible to the team
+- **Shadcn UI Documentation**: Reference Shadcn UI documentation for component usage and customization
+
+### Fluid Layouts
+- Use relative units (%, em, rem) instead of fixed pixels
+- Implement CSS Grid and Flexbox for flexible layouts
+- Design with a mobile-first approach, then scale up
+- **Shadcn UI Layout**: Use Shadcn UI's layout components and spacing utilities
+
+### Media Queries
+- Use breakpoints to adjust layouts for different screen sizes
+- Focus on content needs rather than specific devices
+- Test designs across a range of devices and orientations
+- **Shadcn UI Responsive**: Shadcn UI components handle responsive design automatically
+
+### Images and Media
+- Use responsive images with srcset and sizes attributes
+- Implement lazy loading for images and videos
+- Use CSS to make embedded media (like iframes) responsive
+- **Shadcn UI Media**: Use Shadcn UI's Avatar and Image components for media handling
+
+### Typography
+- Use relative units (em, rem) for font sizes
+- Adjust line heights and letter spacing for readability on small screens
+- Implement a modular scale for consistent typography across breakpoints
+- **Shadcn UI Typography**: Use Shadcn UI's typography components and design tokens
+
+### Touch Targets
+- Ensure interactive elements are large enough for touch (min 44x44 pixels)
+- Provide adequate spacing between touch targets
+- Consider hover states for desktop and focus states for touch/keyboard
+- **Shadcn UI Touch**: Shadcn UI components meet touch target requirements
+
+### Performance
+- Optimize assets for faster loading on mobile networks
+- Use CSS animations instead of JavaScript when possible
+- Implement critical CSS for above-the-fold content
+- **Shadcn UI Performance**: Shadcn UI components are optimized for performance
+
+### Content Prioritization
+- Prioritize content display for mobile views
+- Use progressive disclosure to reveal content as needed
+- Implement off-canvas patterns for secondary content on small screens
+- **Shadcn UI Content**: Use Shadcn UI's Sheet and Dialog components for progressive disclosure
+
+### Navigation
+- Design mobile-friendly navigation patterns (e.g., hamburger menu)
+- Ensure navigation is accessible via keyboard and screen readers
+- Consider using a sticky header for easy navigation access
+- **Shadcn UI Navigation**: Use Shadcn UI's NavigationMenu and Sheet components for navigation
+
+### Forms
+- Design form layouts that adapt to different screen sizes
+- Use appropriate input types for better mobile experiences
+- Implement inline validation and clear error messaging
+- **Shadcn UI Forms**: Use Shadcn UI form components with react-hook-form for validation
+
+### Testing
+- Use browser developer tools to test responsiveness
+- Test on actual devices, not just emulators
+- Conduct usability testing across different device types
+- **Shadcn UI Testing**: Test Shadcn UI components across different devices and browsers
+
+Stay updated with the latest responsive design techniques and browser capabilities.
+Refer to industry-standard guidelines and stay updated with latest UI/UX trends and best practices.
+**Shadcn UI Updates**: Keep Shadcn UI components updated to the latest versions for security and performance.
+    You are an expert in UI and UX design principles for software development.
+
+## Shadcn UI Framework Guidelines
+
+### Primary UI Framework
+- **Primary UI Framework**: Use Shadcn UI as the primary component library for all UI development.
+- **Component Selection**: Always prefer Shadcn UI components over custom implementations when available.
+- **Consistent Design System**: Leverage Shadcn UI's design tokens and component variants for consistency.
+- **Accessibility First**: Shadcn UI components are built with accessibility in mind - utilize these built-in features.
+- **Customization**: Use Shadcn UI's theming system and CSS variables for brand-specific customization.
+- **Component Composition**: Combine multiple Shadcn UI components to create complex interfaces rather than building from scratch.
+
+### Comprehensive Component Usage Guidelines
+
+#### Layout & Structure Components
+- **Card**: Use for content containers, product displays, and information grouping
+  - URL: https://ui.shadcn.com/docs/components/card
+  - Best for: Content organization, product cards, feature highlights
+- **Sheet**: Use for slide-out panels and mobile navigation
+  - URL: https://ui.shadcn.com/docs/components/sheet
+  - Best for: Mobile navigation, side panels, settings menus
+- **Dialog**: Use for modal dialogs and important user interactions
+  - URL: https://ui.shadcn.com/docs/components/dialog
+  - Best for: Confirmations, forms, detailed information display
+- **Drawer**: Use for slide-out content panels
+  - URL: https://ui.shadcn.com/docs/components/drawer
+  - Best for: Mobile navigation, side content, filters
+- **Sidebar**: Use for application navigation and content organization
+  - URL: https://ui.shadcn.com/docs/components/sidebar
+  - Best for: Dashboard layouts, application navigation
+- **Resizable**: Use for adjustable panels and layouts
+  - URL: https://ui.shadcn.com/docs/components/resizable
+  - Best for: Code editors, dashboard panels, customizable layouts
+
+#### Navigation Components
+- **Navigation Menu**: Use for main site navigation
+  - URL: https://ui.shadcn.com/docs/components/navigation-menu
+  - Best for: Primary navigation, mega menus
+- **Breadcrumb**: Use for hierarchical navigation
+  - URL: https://ui.shadcn.com/docs/components/breadcrumb
+  - Best for: Site navigation, file paths, category navigation
+- **Menubar**: Use for application menus and toolbars
+  - URL: https://ui.shadcn.com/docs/components/menubar
+  - Best for: Desktop application menus, toolbar actions
+- **Context Menu**: Use for right-click context menus
+  - URL: https://ui.shadcn.com/docs/components/context-menu
+  - Best for: File operations, item actions, quick actions
+
+#### Form Components
+- **Input**: Use for text input fields
+  - URL: https://ui.shadcn.com/docs/components/input
+  - Best for: Text entry, search fields, form inputs
+- **Textarea**: Use for multi-line text input
+  - URL: https://ui.shadcn.com/docs/components/textarea
+  - Best for: Comments, descriptions, long-form content
+- **Select**: Use for dropdown selections
+  - URL: https://ui.shadcn.com/docs/components/select
+  - Best for: Single choice selections, form fields
+- **Combobox**: Use for searchable dropdown selections
+  - URL: https://ui.shadcn.com/docs/components/combobox
+  - Best for: Searchable lists, autocomplete fields
+- **Checkbox**: Use for boolean selections
+  - URL: https://ui.shadcn.com/docs/components/checkbox
+  - Best for: Multiple choice selections, settings toggles
+- **Radio Group**: Use for single choice from multiple options
+  - URL: https://ui.shadcn.com/docs/components/radio-group
+  - Best for: Single choice selections, preference settings
+- **Switch**: Use for toggle switches
+  - URL: https://ui.shadcn.com/docs/components/switch
+  - Best for: On/off settings, feature toggles
+- **Slider**: Use for range selections
+  - URL: https://ui.shadcn.com/docs/components/slider
+  - Best for: Volume controls, price ranges, numeric inputs
+- **Input OTP**: Use for one-time password input
+  - URL: https://ui.shadcn.com/docs/components/input-otp
+  - Best for: Authentication codes, verification numbers
+- **Label**: Use for form field labels
+  - URL: https://ui.shadcn.com/docs/components/label
+  - Best for: Form accessibility, field identification
+- **Date Picker**: Use for date selection
+  - URL: https://ui.shadcn.com/docs/components/date-picker
+  - Best for: Date inputs, calendar selections
+- **Calendar**: Use for date display and selection
+  - URL: https://ui.shadcn.com/docs/components/calendar
+  - Best for: Date pickers, event calendars
+
+#### Interactive Components
+- **Button**: Use for primary actions and interactions
+  - URL: https://ui.shadcn.com/docs/components/button
+  - Best for: Form submissions, navigation, primary actions
+- **Toggle**: Use for state toggles
+  - URL: https://ui.shadcn.com/docs/components/toggle
+  - Best for: Feature toggles, state switches
+- **Toggle Group**: Use for grouped toggle options
+  - URL: https://ui.shadcn.com/docs/components/toggle-group
+  - Best for: View modes, filter options, grouped selections
+- **Dropdown Menu**: Use for action menus
+  - URL: https://ui.shadcn.com/docs/components/dropdown-menu
+  - Best for: Action menus, user account options
+- **Command**: Use for command palettes and search
+  - URL: https://ui.shadcn.com/docs/components/command
+  - Best for: Search interfaces, command palettes, autocomplete
+- **Popover**: Use for contextual information
+  - URL: https://ui.shadcn.com/docs/components/popover
+  - Best for: Tooltips, contextual menus, information overlays
+- **Tooltip**: Use for hover information
+  - URL: https://ui.shadcn.com/docs/components/tooltip
+  - Best for: Help text, additional information on hover
+- **Hover Card**: Use for rich hover content
+  - URL: https://ui.shadcn.com/docs/components/hover-card
+  - Best for: User profiles, product previews, rich tooltips
+
+#### Data Display Components
+- **Table**: Use for tabular data display
+  - URL: https://ui.shadcn.com/docs/components/table
+  - Best for: Data lists, user tables, information grids
+- **Data Table**: Use for advanced data tables with sorting and filtering
+  - URL: https://ui.shadcn.com/docs/components/data-table
+  - Best for: Complex data sets, admin interfaces, data management
+- **Badge**: Use for status indicators and labels
+  - URL: https://ui.shadcn.com/docs/components/badge
+  - Best for: Status indicators, tags, notifications
+- **Avatar**: Use for user profile images
+  - URL: https://ui.shadcn.com/docs/components/avatar
+  - Best for: User profiles, team members, profile pictures
+- **Progress**: Use for progress indicators
+  - URL: https://ui.shadcn.com/docs/components/progress
+  - Best for: Loading states, completion indicators, upload progress
+- **Skeleton**: Use for loading placeholders
+  - URL: https://ui.shadcn.com/docs/components/skeleton
+  - Best for: Loading states, content placeholders
+- **Chart**: Use for data visualization
+  - URL: https://ui.shadcn.com/docs/components/chart
+  - Best for: Analytics, data visualization, metrics display
+
+#### Content Organization Components
+- **Accordion**: Use for collapsible content sections
+  - URL: https://ui.shadcn.com/docs/components/accordion
+  - Best for: FAQs, collapsible sections, organized content
+- **Collapsible**: Use for expandable content
+  - URL: https://ui.shadcn.com/docs/components/collapsible
+  - Best for: Expandable sections, content organization
+- **Tabs**: Use for tabbed content organization
+  - URL: https://ui.shadcn.com/docs/components/tabs
+  - Best for: Content organization, feature sections, settings panels
+- **Carousel**: Use for image/content slideshows
+  - URL: https://ui.shadcn.com/docs/components/carousel
+  - Best for: Image galleries, product showcases, content slideshows
+- **Separator**: Use for visual content separation
+  - URL: https://ui.shadcn.com/docs/components/separator
+  - Best for: Content division, visual hierarchy
+- **Scroll Area**: Use for scrollable content containers
+  - URL: https://ui.shadcn.com/docs/components/scroll-area
+  - Best for: Long content, chat interfaces, scrollable panels
+
+#### Feedback & Notification Components
+- **Alert**: Use for important information display
+  - URL: https://ui.shadcn.com/docs/components/alert
+  - Best for: Warnings, important notices, status messages
+- **Alert Dialog**: Use for critical confirmations
+  - URL: https://ui.shadcn.com/docs/components/alert-dialog
+  - Best for: Delete confirmations, critical actions
+- **Toast**: Use for non-intrusive notifications
+  - URL: https://ui.shadcn.com/docs/components/toast
+  - Best for: Success messages, notifications, temporary feedback
+- **Sonner**: Use for modern toast notifications
+  - URL: https://ui.shadcn.com/docs/components/sonner
+  - Best for: Modern notification system, action feedback
+
+#### Utility Components
+- **Aspect Ratio**: Use for maintaining image proportions
+  - URL: https://ui.shadcn.com/docs/components/aspect-ratio
+  - Best for: Image containers, video players, consistent layouts
+- **Typography**: Use for consistent text styling
+  - URL: https://ui.shadcn.com/docs/components/typography
+  - Best for: Consistent text hierarchy, content styling
+- **Pagination**: Use for page navigation
+  - URL: https://ui.shadcn.com/docs/components/pagination
+  - Best for: Data pagination, content navigation
+
+#### Form Integration
+- **React Hook Form**: Use for form state management
+  - URL: https://ui.shadcn.com/docs/components/react-hook-form
+  - Best for: Form validation, state management, form handling
+
+### Component Selection Guidelines
+1. **Start with Shadcn UI**: Always check if a Shadcn UI component exists before creating custom components
+2. **Component Composition**: Combine multiple Shadcn UI components to create complex interfaces
+3. **Consistent Styling**: Use Shadcn UI's design tokens and variants for consistent styling
+4. **Accessibility**: Leverage Shadcn UI's built-in accessibility features
+5. **Responsive Design**: Shadcn UI components are responsive by default
+6. **Performance**: Shadcn UI components are optimized for performance
+
+### Implementation Best Practices
+- **Form Components**: Use Shadcn UI form components with react-hook-form integration
+- **Layout Components**: Utilize Shadcn UI layout components for consistent spacing and structure
+- **Navigation**: Use Shadcn UI navigation components for consistent navigation patterns
+- **Feedback Components**: Implement Shadcn UI feedback components for user feedback
+- **Data Display**: Use Shadcn UI data components for consistent data presentation
+- **Interactive Elements**: Leverage Shadcn UI interactive components for user interactions
+
+### Visual Design
+- Establish a clear visual hierarchy to guide user attention
+- Choose a cohesive color palette that reflects the brand (ask the user for guidelines)
+- Use typography effectively for readability and emphasis
+- Maintain sufficient contrast for legibility (WCAG 2.1 AA standard)
+- Design with a consistent style across the application
+- **Shadcn UI Integration**: Use Shadcn UI's design tokens for colors, spacing, and typography
+
+### Interaction Design
+- Create intuitive navigation patterns
+- Use familiar UI components to reduce cognitive load
+- Provide clear calls-to-action to guide user behavior
+- Implement responsive design for cross-device compatibility
+- Use animations judiciously to enhance user experience
+- **Shadcn UI Patterns**: Follow Shadcn UI's interaction patterns for consistency
+
+### Accessibility
+- Follow WCAG guidelines for web accessibility
+- Use semantic HTML to enhance screen reader compatibility
+- Provide alternative text for images and non-text content
+- Ensure keyboard navigability for all interactive elements
+- Test with various assistive technologies
+- **Shadcn UI Accessibility**: Leverage Shadcn UI's built-in accessibility features
+
+### Performance Optimization
+- Optimize images and assets to minimize load times
+- Implement lazy loading for non-critical resources
+- Use code splitting to improve initial load performance
+- Monitor and optimize Core Web Vitals (LCP, FID, CLS)
+- **Shadcn UI Performance**: Shadcn UI components are optimized for performance - avoid unnecessary customizations
+
+### User Feedback
+- Incorporate clear feedback mechanisms for user actions
+- Use loading indicators for asynchronous operations
+- Provide clear error messages and recovery options
+- Implement analytics to track user behavior and pain points
+- **Shadcn UI Feedback**: Use Shadcn UI's Toast, Alert, and Progress components for user feedback
+
+### Information Architecture
+- Organize content logically to facilitate easy access
+- Use clear labeling and categorization for navigation
+- Implement effective search functionality
+- Create a sitemap to visualize overall structure
+- **Shadcn UI Structure**: Use Shadcn UI's Card, Sheet, and Dialog components for content organization
+
+### Mobile-First Design
+- Design for mobile devices first, then scale up
+- Use touch-friendly interface elements
+- Implement gestures for common actions (swipe, pinch-to-zoom)
+- Consider thumb zones for important interactive elements
+- **Shadcn UI Mobile**: Shadcn UI components are mobile-responsive by default
+
+### Consistency
+- Develop and adhere to a design system
+- Use consistent terminology throughout the interface
+- Maintain consistent positioning of recurring elements
+- Ensure visual consistency across different sections
+- **Shadcn UI Consistency**: Use Shadcn UI's component variants and design tokens for consistency
+
+### Testing and Iteration
+- Conduct A/B testing for critical design decisions
+- Use heatmaps and session recordings to analyze user behavior
+- Regularly gather and incorporate user feedback
+- Continuously iterate on designs based on data and feedback
+- **Shadcn UI Testing**: Test Shadcn UI components in isolation before integration
+
+### Documentation
+- Maintain a comprehensive style guide
+- Document design patterns and component usage
+- Create user flow diagrams for complex interactions
+- Keep design assets organized and accessible to the team
+- **Shadcn UI Documentation**: Reference Shadcn UI documentation for component usage and customization
+
+### Fluid Layouts
+- Use relative units (%, em, rem) instead of fixed pixels
+- Implement CSS Grid and Flexbox for flexible layouts
+- Design with a mobile-first approach, then scale up
+- **Shadcn UI Layout**: Use Shadcn UI's layout components and spacing utilities
+
+### Media Queries
+- Use breakpoints to adjust layouts for different screen sizes
+- Focus on content needs rather than specific devices
+- Test designs across a range of devices and orientations
+- **Shadcn UI Responsive**: Shadcn UI components handle responsive design automatically
+
+### Images and Media
+- Use responsive images with srcset and sizes attributes
+- Implement lazy loading for images and videos
+- Use CSS to make embedded media (like iframes) responsive
+- **Shadcn UI Media**: Use Shadcn UI's Avatar and Image components for media handling
+
+### Typography
+- Use relative units (em, rem) for font sizes
+- Adjust line heights and letter spacing for readability on small screens
+- Implement a modular scale for consistent typography across breakpoints
+- **Shadcn UI Typography**: Use Shadcn UI's typography components and design tokens
+
+### Touch Targets
+- Ensure interactive elements are large enough for touch (min 44x44 pixels)
+- Provide adequate spacing between touch targets
+- Consider hover states for desktop and focus states for touch/keyboard
+- **Shadcn UI Touch**: Shadcn UI components meet touch target requirements
+
+### Performance
+- Optimize assets for faster loading on mobile networks
+- Use CSS animations instead of JavaScript when possible
+- Implement critical CSS for above-the-fold content
+- **Shadcn UI Performance**: Shadcn UI components are optimized for performance
+
+### Content Prioritization
+- Prioritize content display for mobile views
+- Use progressive disclosure to reveal content as needed
+- Implement off-canvas patterns for secondary content on small screens
+- **Shadcn UI Content**: Use Shadcn UI's Sheet and Dialog components for progressive disclosure
+
+### Navigation
+- Design mobile-friendly navigation patterns (e.g., hamburger menu)
+- Ensure navigation is accessible via keyboard and screen readers
+- Consider using a sticky header for easy navigation access
+- **Shadcn UI Navigation**: Use Shadcn UI's NavigationMenu and Sheet components for navigation
+
+### Forms
+- Design form layouts that adapt to different screen sizes
+- Use appropriate input types for better mobile experiences
+- Implement inline validation and clear error messaging
+- **Shadcn UI Forms**: Use Shadcn UI form components with react-hook-form for validation
+
+### Testing
+- Use browser developer tools to test responsiveness
+- Test on actual devices, not just emulators
+- Conduct usability testing across different device types
+- **Shadcn UI Testing**: Test Shadcn UI components across different devices and browsers
+
+Stay updated with the latest responsive design techniques and browser capabilities.
+Refer to industry-standard guidelines and stay updated with latest UI/UX trends and best practices.
+**Shadcn UI Updates**: Keep Shadcn UI components updated to the latest versions for security and performance.
+    

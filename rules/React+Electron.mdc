@@ -1,0 +1,508 @@
+---
+description: *.ts *.tsx
+alwaysApply: false
+---
+You are an expert developer in TypeScript, Node.js, Next.js 14 App Router, React, Supabase, GraphQL, Genql, Tailwind CSS, Radix UI, Shadcn UI, and Electron.
+
+## React and Electron Desktop Application Development
+
+### Primary Development Framework
+- **Cross-Platform Development**: Use React with Electron for cross-platform desktop applications.
+- **Component-Based Architecture**: Leverage React's component-based architecture for maintainable desktop UIs.
+- **TypeScript Integration**: Use TypeScript for type-safe development across React and Electron.
+- **Performance Optimization**: Optimize for desktop performance with Electron's native capabilities.
+- **Security First**: Implement proper security measures for desktop applications.
+
+### Electron Architecture and Integration
+
+#### Electron Process Model
+- **Main Process**: Handle application lifecycle, native APIs, and window management
+  - URL: https://www.electronjs.org/docs/latest
+  - Best for: Application initialization, native system integration, window creation
+- **Renderer Process**: Handle UI rendering and React application logic
+  - Best for: React components, UI interactions, client-side logic
+- **Preload Scripts**: Secure communication between main and renderer processes
+  - Best for: Exposing safe APIs to renderer process, IPC communication
+
+#### React and Electron Integration
+- **Electron Forge Integration**: Use Electron Forge for React integration
+  - URL: https://www.electronforge.io/guides/framework-integration/react
+  - Best for: Standardized build process, React integration, development workflow
+- **Electron React Boilerplate**: Use as starting template for scalable applications
+  - URL: https://github.com/electron-react-boilerplate/electron-react-boilerplate
+  - Best for: Production-ready setup, best practices, scalable architecture
+- **Development Environment**: Set up hot reload for React components in Electron
+  - Best for: Fast development iteration, debugging, component testing
+
+### Key Principles
+- Write concise, technical responses with accurate TypeScript examples.
+- Use functional, declarative programming. Avoid classes.
+- Prefer iteration and modularization over duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+- Favor named exports for components.
+- Use the Receive an Object, Return an Object (RORO) pattern.
+
+### JavaScript/TypeScript
+- Use "function" keyword for pure functions. Omit semicolons.
+- Use TypeScript for all code. Prefer interfaces over types.
+- File structure: Exported component, subcomponents, helpers, static content, types.
+- Avoid unnecessary curly braces in conditional statements.
+- For single-line statements in conditionals, omit curly braces.
+- Use concise, one-line syntax for simple conditional statements (e.g., if (condition) doSomething()).
+
+### Error Handling and Validation
+- Prioritize error handling and edge cases:
+  - Handle errors and edge cases at the beginning of functions.
+  - Use early returns for error conditions to avoid deeply nested if statements.
+  - Place the happy path last in the function for improved readability.
+  - Avoid unnecessary else statements; use if-return pattern instead.
+  - Use guard clauses to handle preconditions and invalid states early.
+  - Implement proper error logging and user-friendly error messages.
+  - Consider using custom error types or error factories for consistent error handling.
+
+### AI SDK
+- Use the Vercel AI SDK UI for implementing streaming chat UI.
+- Use the Vercel AI SDK Core to interact with language models.
+- Use the Vercel AI SDK RSC and Stream Helpers to stream and help with the generations.
+- Implement proper error handling for AI responses and model switching.
+- Implement fallback mechanisms for when an AI model is unavailable.
+- Handle rate limiting and quota exceeded scenarios gracefully.
+- Provide clear error messages to users when AI interactions fail.
+- Implement proper input sanitization for user messages before sending to AI models.
+- Use environment variables for storing API keys and sensitive information.
+
+### React/Next.js
+- Use functional components and TypeScript interfaces.
+- Use declarative JSX.
+- Use function, not const, for components.
+- Use Shadcn UI, Radix, and Tailwind CSS for components and styling.
+- Implement responsive design with Tailwind CSS.
+- Use mobile-first approach for responsive design.
+- Place static content and interfaces at file end.
+- Use content variables for static content outside render functions.
+- Minimize 'use client', 'useEffect', and 'setState'. Favor React Server Components (RSC).
+- Use Zod for form validation.
+- Wrap client components in Suspense with fallback.
+- Use dynamic loading for non-critical components.
+- Optimize images: WebP format, size data, lazy loading.
+- Model expected errors as return values: Avoid using try/catch for expected errors in Server Actions.
+- Use error boundaries for unexpected errors: Implement error boundaries using error.tsx and global-error.tsx files.
+- Use useActionState with react-hook-form for form validation.
+- Code in services/ dir always throw user-friendly errors that can be caught and shown to the user.
+- Use next-safe-action for all server actions.
+- Implement type-safe server actions with proper validation.
+- Handle errors gracefully and return appropriate responses.
+
+### Electron-Specific Development Guidelines
+
+#### Security Best Practices
+- **Context Isolation**: Enable context isolation for security
+  - Best for: Preventing unauthorized access to Node.js APIs
+- **Preload Scripts**: Use preload scripts for safe API exposure
+  - Best for: Secure communication between processes
+- **Content Security Policy**: Implement CSP for renderer process
+  - Best for: Preventing XSS attacks, securing application
+- **Remote Content**: Disable remote content loading in production
+  - Best for: Security hardening, preventing external code execution
+
+#### Performance Optimization
+- **Process Management**: Optimize main and renderer process communication
+  - Best for: Reducing IPC overhead, improving responsiveness
+- **Memory Management**: Implement proper memory cleanup for desktop apps
+  - Best for: Long-running applications, preventing memory leaks
+- **Lazy Loading**: Load components and features on-demand
+  - Best for: Reducing initial load time, improving startup performance
+- **Native APIs**: Use Electron's native APIs efficiently
+  - Best for: File system access, system integration, native features
+
+#### Desktop-Specific Features
+- **Window Management**: Implement proper window lifecycle management
+  - Best for: Multi-window applications, window state persistence
+- **System Integration**: Integrate with native system features
+  - Best for: File associations, system tray, native menus
+- **Auto-Updates**: Implement secure auto-update mechanism
+  - Best for: Application maintenance, user experience
+- **Offline Support**: Implement offline functionality for desktop apps
+  - Best for: Local data storage, offline-first applications
+
+### Supabase and GraphQL
+- Use the Supabase client for database interactions and real-time subscriptions.
+- Implement Row Level Security (RLS) policies for fine-grained access control.
+- Use Supabase Auth for user authentication and management.
+- Leverage Supabase Storage for file uploads and management.
+- Use Supabase Edge Functions for serverless API endpoints when needed.
+- Use the generated GraphQL client (Genql) for type-safe API interactions with Supabase.
+- Optimize GraphQL queries to fetch only necessary data.
+- Use Genql queries for fetching large datasets efficiently.
+- Implement proper authentication and authorization using Supabase RLS and Policies.
+
+### Key Conventions
+1. Rely on Next.js App Router for state changes and routing.
+2. Prioritize Web Vitals (LCP, CLS, FID).
+3. Minimize 'use client' usage:
+   - Prefer server components and Next.js SSR features.
+   - Use 'use client' only for Web API access in small components.
+   - Avoid using 'use client' for data fetching or state management.
+4. Follow the monorepo structure:
+   - Place shared code in the 'packages' directory.
+   - Keep app-specific code in the 'apps' directory.
+5. Use Taskfile commands for development and deployment tasks.
+6. Adhere to the defined database schema and use enum tables for predefined values.
+
+### Electron Development Conventions
+1. **Process Separation**: Keep main and renderer processes properly separated.
+2. **IPC Communication**: Use IPC for secure inter-process communication.
+3. **Security First**: Always prioritize security in desktop applications.
+4. **Native Integration**: Leverage Electron's native capabilities appropriately.
+5. **Cross-Platform**: Ensure compatibility across Windows, macOS, and Linux.
+6. **Performance**: Optimize for desktop performance and resource usage.
+
+### Naming Conventions
+- Booleans: Use auxiliary verbs such as 'does', 'has', 'is', and 'should' (e.g., isDisabled, hasError).
+- Filenames: Use lowercase with dash separators (e.g., auth-wizard.tsx).
+- File extensions: Use .config.ts, .test.ts, .context.tsx, .type.ts, .hook.ts as appropriate.
+- Electron-specific: Use .main.ts, .preload.ts, .renderer.ts for process-specific files.
+
+### Component Structure
+- Break down components into smaller parts with minimal props.
+- Suggest micro folder structure for components.
+- Use composition to build complex components.
+- Follow the order: component declaration, styled components (if any), TypeScript types.
+- **Electron Components**: Separate desktop-specific components from web components.
+
+### Data Fetching and State Management
+- Use React Server Components for data fetching when possible.
+- Implement the preload pattern to prevent waterfalls.
+- Leverage Supabase for real-time data synchronization and state management.
+- Use Vercel KV for chat history, rate limiting, and session storage when appropriate.
+- **Electron State**: Use Electron's IPC for main-renderer state synchronization.
+
+### Styling
+- Use Tailwind CSS for styling, following the Utility First approach.
+- Utilize the Class Variance Authority (CVA) for managing component variants.
+- **Desktop Styling**: Adapt web styles for desktop application requirements.
+- **Native Feel**: Ensure desktop applications feel native to each platform.
+
+### Testing
+- Implement unit tests for utility functions and hooks.
+- Use integration tests for complex components and pages.
+- Implement end-to-end tests for critical user flows.
+- Use Supabase local development for testing database interactions.
+- **Electron Testing**: Test both main and renderer processes.
+- **Cross-Platform Testing**: Test on all target platforms (Windows, macOS, Linux).
+
+### Accessibility
+- Ensure interfaces are keyboard navigable.
+- Implement proper ARIA labels and roles for components.
+- Ensure color contrast ratios meet WCAG standards for readability.
+- **Desktop Accessibility**: Consider desktop-specific accessibility requirements.
+- **Native Integration**: Leverage native accessibility features where appropriate.
+
+### Documentation
+- Provide clear and concise comments for complex logic.
+- Use JSDoc comments for functions and components to improve IDE intellisense.
+- Keep the README files up-to-date with setup instructions and project overview.
+- Document Supabase schema, RLS policies, and Edge Functions when used.
+- **Electron Documentation**: Document main process, renderer process, and IPC communication.
+- **Build Process**: Document Electron build and packaging process.
+
+### Development Workflow
+
+#### Setup and Configuration
+- **Electron Forge**: Use Electron Forge for standardized build process
+  - URL: https://www.electronforge.io/guides/framework-integration/react
+- **Development Environment**: Set up hot reload for React components
+- **Build Configuration**: Configure builds for all target platforms
+- **Packaging**: Use appropriate packaging for distribution
+
+#### Development Best Practices
+- **Hot Reload**: Implement hot reload for React components in Electron
+- **Debugging**: Use Electron's debugging tools for both processes
+- **Performance Monitoring**: Monitor memory usage and performance
+- **Security Auditing**: Regularly audit security configurations
+
+#### Production Considerations
+- **Code Signing**: Implement code signing for distribution
+- **Auto-Updates**: Set up secure auto-update mechanism
+- **Crash Reporting**: Implement crash reporting for desktop apps
+- **Analytics**: Use appropriate analytics for desktop applications
+
+### Official Documentation References
+- **React Documentation**: https://react.dev/learn, https://react.dev/reference
+- **Electron Documentation**: https://www.electronjs.org/docs/latest
+- **Electron Forge**: https://www.electronforge.io/guides/framework-integration/react
+- **Electron React Boilerplate**: https://github.com/electron-react-boilerplate/electron-react-boilerplate
+
+### Community Resources
+- **Stack Overflow**: React and Electron integration questions
+- **DEV Community**: React and Electron tutorials and guides
+- **GitHub Examples**: Community examples and boilerplates
+
+Refer to Next.js documentation for Data Fetching, Rendering, and Routing best practices and to the
+Vercel AI SDK documentation and OpenAI/Anthropic API guidelines for best practices in AI integration.
+Refer to Electron documentation for desktop application development best practices.
+    
+    Refer to Next.js documentation for Data Fetching, Rendering, and Routing best practices and to the
+    Vercel AI SDK documentation and OpenAI/Anthropic API guidelines for best practices in AI integration.
+    You are an expert developer in TypeScript, Node.js, Next.js 14 App Router, React, Supabase, GraphQL, Genql, Tailwind CSS, Radix UI, Shadcn UI, and Electron.
+
+## React and Electron Desktop Application Development
+
+### Primary Development Framework
+- **Cross-Platform Development**: Use React with Electron for cross-platform desktop applications.
+- **Component-Based Architecture**: Leverage React's component-based architecture for maintainable desktop UIs.
+- **TypeScript Integration**: Use TypeScript for type-safe development across React and Electron.
+- **Performance Optimization**: Optimize for desktop performance with Electron's native capabilities.
+- **Security First**: Implement proper security measures for desktop applications.
+
+### Electron Architecture and Integration
+
+#### Electron Process Model
+- **Main Process**: Handle application lifecycle, native APIs, and window management
+  - URL: https://www.electronjs.org/docs/latest
+  - Best for: Application initialization, native system integration, window creation
+- **Renderer Process**: Handle UI rendering and React application logic
+  - Best for: React components, UI interactions, client-side logic
+- **Preload Scripts**: Secure communication between main and renderer processes
+  - Best for: Exposing safe APIs to renderer process, IPC communication
+
+#### React and Electron Integration
+- **Electron Forge Integration**: Use Electron Forge for React integration
+  - URL: https://www.electronforge.io/guides/framework-integration/react
+  - Best for: Standardized build process, React integration, development workflow
+- **Electron React Boilerplate**: Use as starting template for scalable applications
+  - URL: https://github.com/electron-react-boilerplate/electron-react-boilerplate
+  - Best for: Production-ready setup, best practices, scalable architecture
+- **Development Environment**: Set up hot reload for React components in Electron
+  - Best for: Fast development iteration, debugging, component testing
+
+### Key Principles
+- Write concise, technical responses with accurate TypeScript examples.
+- Use functional, declarative programming. Avoid classes.
+- Prefer iteration and modularization over duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+- Favor named exports for components.
+- Use the Receive an Object, Return an Object (RORO) pattern.
+
+### JavaScript/TypeScript
+- Use "function" keyword for pure functions. Omit semicolons.
+- Use TypeScript for all code. Prefer interfaces over types.
+- File structure: Exported component, subcomponents, helpers, static content, types.
+- Avoid unnecessary curly braces in conditional statements.
+- For single-line statements in conditionals, omit curly braces.
+- Use concise, one-line syntax for simple conditional statements (e.g., if (condition) doSomething()).
+
+### Error Handling and Validation
+- Prioritize error handling and edge cases:
+  - Handle errors and edge cases at the beginning of functions.
+  - Use early returns for error conditions to avoid deeply nested if statements.
+  - Place the happy path last in the function for improved readability.
+  - Avoid unnecessary else statements; use if-return pattern instead.
+  - Use guard clauses to handle preconditions and invalid states early.
+  - Implement proper error logging and user-friendly error messages.
+  - Consider using custom error types or error factories for consistent error handling.
+
+### AI SDK
+- Use the Vercel AI SDK UI for implementing streaming chat UI.
+- Use the Vercel AI SDK Core to interact with language models.
+- Use the Vercel AI SDK RSC and Stream Helpers to stream and help with the generations.
+- Implement proper error handling for AI responses and model switching.
+- Implement fallback mechanisms for when an AI model is unavailable.
+- Handle rate limiting and quota exceeded scenarios gracefully.
+- Provide clear error messages to users when AI interactions fail.
+- Implement proper input sanitization for user messages before sending to AI models.
+- Use environment variables for storing API keys and sensitive information.
+
+### React/Next.js
+- Use functional components and TypeScript interfaces.
+- Use declarative JSX.
+- Use function, not const, for components.
+- Use Shadcn UI, Radix, and Tailwind CSS for components and styling.
+- Implement responsive design with Tailwind CSS.
+- Use mobile-first approach for responsive design.
+- Place static content and interfaces at file end.
+- Use content variables for static content outside render functions.
+- Minimize 'use client', 'useEffect', and 'setState'. Favor React Server Components (RSC).
+- Use Zod for form validation.
+- Wrap client components in Suspense with fallback.
+- Use dynamic loading for non-critical components.
+- Optimize images: WebP format, size data, lazy loading.
+- Model expected errors as return values: Avoid using try/catch for expected errors in Server Actions.
+- Use error boundaries for unexpected errors: Implement error boundaries using error.tsx and global-error.tsx files.
+- Use useActionState with react-hook-form for form validation.
+- Code in services/ dir always throw user-friendly errors that can be caught and shown to the user.
+- Use next-safe-action for all server actions.
+- Implement type-safe server actions with proper validation.
+- Handle errors gracefully and return appropriate responses.
+
+### Electron-Specific Development Guidelines
+
+#### Security Best Practices
+- **Context Isolation**: Enable context isolation for security
+  - Best for: Preventing unauthorized access to Node.js APIs
+- **Preload Scripts**: Use preload scripts for safe API exposure
+  - Best for: Secure communication between processes
+- **Content Security Policy**: Implement CSP for renderer process
+  - Best for: Preventing XSS attacks, securing application
+- **Remote Content**: Disable remote content loading in production
+  - Best for: Security hardening, preventing external code execution
+
+#### Performance Optimization
+- **Process Management**: Optimize main and renderer process communication
+  - Best for: Reducing IPC overhead, improving responsiveness
+- **Memory Management**: Implement proper memory cleanup for desktop apps
+  - Best for: Long-running applications, preventing memory leaks
+- **Lazy Loading**: Load components and features on-demand
+  - Best for: Reducing initial load time, improving startup performance
+- **Native APIs**: Use Electron's native APIs efficiently
+  - Best for: File system access, system integration, native features
+
+#### Desktop-Specific Features
+- **Window Management**: Implement proper window lifecycle management
+  - Best for: Multi-window applications, window state persistence
+- **System Integration**: Integrate with native system features
+  - Best for: File associations, system tray, native menus
+- **Auto-Updates**: Implement secure auto-update mechanism
+  - Best for: Application maintenance, user experience
+- **Offline Support**: Implement offline functionality for desktop apps
+  - Best for: Local data storage, offline-first applications
+
+### Supabase and GraphQL
+- Use the Supabase client for database interactions and real-time subscriptions.
+- Implement Row Level Security (RLS) policies for fine-grained access control.
+- Use Supabase Auth for user authentication and management.
+- Leverage Supabase Storage for file uploads and management.
+- Use Supabase Edge Functions for serverless API endpoints when needed.
+- Use the generated GraphQL client (Genql) for type-safe API interactions with Supabase.
+- Optimize GraphQL queries to fetch only necessary data.
+- Use Genql queries for fetching large datasets efficiently.
+- Implement proper authentication and authorization using Supabase RLS and Policies.
+
+### Key Conventions
+1. Rely on Next.js App Router for state changes and routing.
+2. Prioritize Web Vitals (LCP, CLS, FID).
+3. Minimize 'use client' usage:
+   - Prefer server components and Next.js SSR features.
+   - Use 'use client' only for Web API access in small components.
+   - Avoid using 'use client' for data fetching or state management.
+4. Follow the monorepo structure:
+   - Place shared code in the 'packages' directory.
+   - Keep app-specific code in the 'apps' directory.
+5. Use Taskfile commands for development and deployment tasks.
+6. Adhere to the defined database schema and use enum tables for predefined values.
+
+### Electron Development Conventions
+1. **Process Separation**: Keep main and renderer processes properly separated.
+2. **IPC Communication**: Use IPC for secure inter-process communication.
+3. **Security First**: Always prioritize security in desktop applications.
+4. **Native Integration**: Leverage Electron's native capabilities appropriately.
+5. **Cross-Platform**: Ensure compatibility across Windows, macOS, and Linux.
+6. **Performance**: Optimize for desktop performance and resource usage.
+
+### Naming Conventions
+- Booleans: Use auxiliary verbs such as 'does', 'has', 'is', and 'should' (e.g., isDisabled, hasError).
+- Filenames: Use lowercase with dash separators (e.g., auth-wizard.tsx).
+- File extensions: Use .config.ts, .test.ts, .context.tsx, .type.ts, .hook.ts as appropriate.
+- Electron-specific: Use .main.ts, .preload.ts, .renderer.ts for process-specific files.
+
+### Component Structure
+- Break down components into smaller parts with minimal props.
+- Suggest micro folder structure for components.
+- Use composition to build complex components.
+- Follow the order: component declaration, styled components (if any), TypeScript types.
+- **Electron Components**: Separate desktop-specific components from web components.
+
+### Data Fetching and State Management
+- Use React Server Components for data fetching when possible.
+- Implement the preload pattern to prevent waterfalls.
+- Leverage Supabase for real-time data synchronization and state management.
+- Use Vercel KV for chat history, rate limiting, and session storage when appropriate.
+- **Electron State**: Use Electron's IPC for main-renderer state synchronization.
+
+### Styling
+- Use Tailwind CSS for styling, following the Utility First approach.
+- Utilize the Class Variance Authority (CVA) for managing component variants.
+- **Desktop Styling**: Adapt web styles for desktop application requirements.
+- **Native Feel**: Ensure desktop applications feel native to each platform.
+
+### Animation & Loading States
+- **Media Generation Loading**: Use Circle Spinner for media-related operations
+  - Implementation: CSS animations with Tailwind CSS classes
+  - Use cases: Image generation, video processing, file uploads
+  - Example: `<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>`
+- **Text Generation Loading**: Use Jumping Dots for text-related operations
+  - Implementation: CSS animations with Tailwind CSS classes
+  - Use cases: AI text generation, chat responses, content loading
+  - Example: `<div className="flex space-x-1"><div className="animate-bounce">.</div><div className="animate-bounce delay-100">.</div><div className="animate-bounce delay-200">.</div></div>`
+- **Performance Optimization**: Use CSS animations over JavaScript animations for better performance
+- **Cross-Platform Consistency**: Ensure animations work consistently across Windows, macOS, and Linux
+- **Electron-Specific Considerations**: 
+  - Use hardware acceleration when available for smooth animations
+  - Consider battery life impact on mobile devices
+  - Implement proper cleanup for animation resources
+- **Accessibility**: Ensure loading states are accessible to screen readers and assistive technologies
+
+### Testing
+- Implement unit tests for utility functions and hooks.
+- Use integration tests for complex components and pages.
+- Implement end-to-end tests for critical user flows.
+- Use Supabase local development for testing database interactions.
+- **Electron Testing**: Test both main and renderer processes.
+- **Cross-Platform Testing**: Test on all target platforms (Windows, macOS, Linux).
+
+### Accessibility
+- Ensure interfaces are keyboard navigable.
+- Implement proper ARIA labels and roles for components.
+- Ensure color contrast ratios meet WCAG standards for readability.
+- **Desktop Accessibility**: Consider desktop-specific accessibility requirements.
+- **Native Integration**: Leverage native accessibility features where appropriate.
+
+### Documentation
+- Provide clear and concise comments for complex logic.
+- Use JSDoc comments for functions and components to improve IDE intellisense.
+- Keep the README files up-to-date with setup instructions and project overview.
+- Document Supabase schema, RLS policies, and Edge Functions when used.
+- **Electron Documentation**: Document main process, renderer process, and IPC communication.
+- **Build Process**: Document Electron build and packaging process.
+
+### Development Workflow
+
+#### Setup and Configuration
+- **Electron Forge**: Use Electron Forge for standardized build process
+  - URL: https://www.electronforge.io/guides/framework-integration/react
+- **Development Environment**: Set up hot reload for React components
+- **Build Configuration**: Configure builds for all target platforms
+- **Packaging**: Use appropriate packaging for distribution
+
+#### Development Best Practices
+- **Hot Reload**: Implement hot reload for React components in Electron
+- **Debugging**: Use Electron's debugging tools for both processes
+- **Performance Monitoring**: Monitor memory usage and performance
+- **Security Auditing**: Regularly audit security configurations
+
+#### Production Considerations
+- **Code Signing**: Implement code signing for distribution
+- **Auto-Updates**: Set up secure auto-update mechanism
+- **Crash Reporting**: Implement crash reporting for desktop apps
+- **Analytics**: Use appropriate analytics for desktop applications
+
+### Official Documentation References
+- **React Documentation**: https://react.dev/learn, https://react.dev/reference
+- **Electron Documentation**: https://www.electronjs.org/docs/latest
+- **Electron Forge**: https://www.electronforge.io/guides/framework-integration/react
+- **Electron React Boilerplate**: https://github.com/electron-react-boilerplate/electron-react-boilerplate
+
+### Community Resources
+- **Stack Overflow**: React and Electron integration questions
+- **DEV Community**: React and Electron tutorials and guides
+- **GitHub Examples**: Community examples and boilerplates
+
+Refer to Next.js documentation for Data Fetching, Rendering, and Routing best practices and to the
+Vercel AI SDK documentation and OpenAI/Anthropic API guidelines for best practices in AI integration.
+Refer to Electron documentation for desktop application development best practices.
+    
+    Refer to Next.js documentation for Data Fetching, Rendering, and Routing best practices and to the
+    Vercel AI SDK documentation and OpenAI/Anthropic API guidelines for best practices in AI integration.
+    

@@ -1,0 +1,134 @@
+graph TB
+    %% User Interface Layer
+    subgraph UI["🖥️ User Interface Layer"]
+        Chat["💬 Chat Panel<br/>- Agent Interaction<br/>- File Drop Zone<br/>- Prompt Input"]
+        EditPanel["🎬 Media Build Panel<br/>- Canvas (Preview)<br/>- Script Editor<br/>- Timeline<br/>- Assets<br/>- Audio"]
+    end
+
+    %% Frontend Framework
+    subgraph Frontend["⚛️ Frontend Framework"]
+        React["React + Electron<br/>Next.js"]
+        ShadcnUI["shadcn/ui<br/>Components"]
+        VideoEditor["Video Editor<br/>Components"]
+    end
+
+    %% Agent Layer
+    subgraph AgentLayer["🤖 Agent Layer"]
+        FastAgent["fast-agent<br/>(MCP対応)"]
+        CursorAgent["cursor-agent<br/>(Task Decomposition)"]
+        LangChain["LangChain<br/>(Chain Management)"]
+        AutoGen["AutoGen<br/>(Multi-Agent)"]
+    end
+
+    %% LLM Services
+    subgraph LLMServices["🧠 LLM Services"]
+        Ollama["Ollama<br/>(Local LLM)"]
+        Claude["Anthropic Claude"]
+        GPT["OpenAI GPT"]
+        Gemini["Google Gemini"]
+        Fireworks["Fireworks.ai"]
+    end
+
+    %% Multimodal Models
+    subgraph LMM["🎥 Large Multimodal Models"]
+        HunyuanVideo["ARC-Hunyuan-Video-7B"]
+        VideoITG["VideoITG-8B"]
+        LLaVAVideo["LLaVA-Video-7B-Qwen2"]
+    end
+
+    %% Media Processing
+    subgraph MediaProcessing["🎨 Media Processing"]
+        subgraph ImageGen["Image Generation"]
+            ComfyUI["ComfyUI<br/>(Text2Image/ControlNet)"]
+            Ultralytics["Ultralytics<br/>(YOLO Detection)"]
+            DeepFace["DeepFace<br/>(Face Analysis)"]
+        end
+        
+        subgraph VideoGen["Video Processing"]
+            LTXVideo["LTX-Video<br/>(Editing & Effects)"]
+            FastVideo["FastVideo<br/>(Fast Generation)"]
+            OpenSora["Open-Sora<br/>(Generation Framework)"]
+            YTDLP["yt-dlp<br/>(Video Download)"]
+        end
+        
+        subgraph AudioGen["Audio Processing"]
+            Whisper["Whisper<br/>(Speech Recognition)"]
+            CoquiTTS["Coqui TTS"]
+            StyleBertVITS2["Style-Bert-VITS2<br/>(Voice Synthesis)"]
+            AzureSpeech["Azure Speech SDK"]
+            SparkTTS["Spark-TTS"]
+        end
+    end
+
+    %% Workflow Management
+    subgraph WorkflowMgmt["⚙️ Workflow Management"]
+        Sequential["Sequential Thinking<br/>(MCP Server)"]
+        GraphAI["GraphAI<br/>(Task Dependencies)"]
+        Playwright["Playwright-MCP<br/>(Browser Automation)"]
+        MulmocastCLI["Mulmocast-CLI<br/>(Script Execution)"]
+    end
+
+    %% Data Layer
+    subgraph DataLayer["💾 Data Layer"]
+        CocoIndex["CocoIndex<br/>(Codebase Search)"]
+        ClaudeContext["Claude-Context<br/>(Context Management)"]
+        Assets["Asset Storage<br/>(Images/Videos/Audio)"]
+        Templates["Workflow Templates<br/>(.json)"]
+    end
+
+    %% Input Sources
+    subgraph InputSources["📥 Input Sources"]
+        TextInput["Text Input"]
+        URLInput["URL Input"]
+        FileInput["File Input<br/>(PDF/Images/Video/Audio)"]
+        WebScraping["Web Scraping"]
+    end
+
+    %% Output Formats
+    subgraph OutputFormats["📤 Output Formats"]
+        MP4Output["MP4 Video"]
+        JSONTemplate["JSON Templates"]
+        AudioOutput["Audio Files"]
+        ImageOutput["Image Assets"]
+    end
+
+    %% Platform Support
+    subgraph Platforms["🖱️ Platform Support"]
+        MacOS["macOS"]
+        Windows["Windows"]
+        WebApp["Web Application"]
+    end
+
+    %% Connections
+    InputSources --> Chat
+    Chat --> AgentLayer
+    EditPanel --> AgentLayer
+    
+    UI --> Frontend
+    Frontend --> AgentLayer
+    
+    AgentLayer --> LLMServices
+    AgentLayer --> LMM
+    AgentLayer --> WorkflowMgmt
+    
+    LLMServices --> MediaProcessing
+    LMM --> MediaProcessing
+    WorkflowMgmt --> MediaProcessing
+    
+    MediaProcessing --> DataLayer
+    DataLayer --> OutputFormats
+    
+    Frontend --> Platforms
+
+    %% Styling
+    classDef uiClass fill:#B6E3CE,stroke:#006337,stroke-width:2px
+    classDef agentClass fill:#389F70,stroke:#006337,stroke-width:2px
+    classDef llmClass fill:#8EF6C7,stroke:#006337,stroke-width:2px
+    classDef mediaClass fill:#B6E3CE,stroke:#389F70,stroke-width:2px
+    classDef dataClass fill:#389F70,stroke:#006337,stroke-width:2px
+    
+    class UI,Frontend uiClass
+    class AgentLayer,WorkflowMgmt agentClass
+    class LLMServices,LMM llmClass
+    class MediaProcessing mediaClass
+    class DataLayer,InputSources,OutputFormats dataClass
